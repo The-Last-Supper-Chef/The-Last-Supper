@@ -14,4 +14,22 @@ public class WaitingException extends RuntimeException{
             super(WaitingErrorCode.WAITING_NOT_FOUND);
         }
     }
+
+    public static class AlreadyWaitingException extends WaitingException {
+        public AlreadyWaitingException() {
+            super(WaitingErrorCode.ALREADY_WAITING);
+        }
+    }
+
+    public static class AccountNotFoundException extends WaitingException {
+        public AccountNotFoundException() {
+            super(WaitingErrorCode.ACCOUNT_NOT_FOUND);
+        }
+    }
+
+    public static class WaitingNotOpenException extends WaitingException {
+        public WaitingNotOpenException() {
+            super(WaitingErrorCode.WAITING_NOT_OPEN);
+        }
+    }
 }
