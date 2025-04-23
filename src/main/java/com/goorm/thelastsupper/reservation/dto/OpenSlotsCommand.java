@@ -19,11 +19,11 @@ import java.util.List;
  * 필드는 모두 불변이며, Spring MVC가 Bean Validation 규칙을 자동 적용합니다.
  * </p>
  */
-@Builder
+@Builder(toBuilder = true)
 public record OpenSlotsCommand(
 
 	/* ---------- 메타 정보 ---------- */
-	Long ownerId,                           // 점주 ID
+	String ownerId,                        // 점주 ID
 	boolean dateBased,                     // 일자 작성 여부
 	boolean dayOfWeekBased,                // 요일 작성 여부
 	boolean timeSlotBased,                 // 타임슬롯 작성 여부
