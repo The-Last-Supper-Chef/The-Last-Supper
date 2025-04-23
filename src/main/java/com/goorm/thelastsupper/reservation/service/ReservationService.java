@@ -1,4 +1,4 @@
 package com.goorm.thelastsupper.reservation.service;
 
-public class ModiftReservationService {
+public class ReservationService {
 }
