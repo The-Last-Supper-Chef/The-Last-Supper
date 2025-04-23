@@ -1,4 +1,11 @@
 package com.goorm.thelastsupper.account.exception;
 
-public class AccountException {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public class AccountException extends RuntimeException {
+
+    private final AccountErrorCode errorCode;
 }
