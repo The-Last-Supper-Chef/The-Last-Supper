@@ -11,7 +11,7 @@ import com.goorm.thelastsupper.reservation.exception.ReservationException;
  * 휴식 구간 간 중첩 규칙 검사 스펙
  */
 @Component
-public class BreakRuleSpecOpenSlot implements OpenSlotValidationRule {
+public class BreakRuleSpecOpenSlotImpl implements OpenSlotValidationRule {
 
 	/**
 	 * 휴식 구간이 서로 겹치는지 검사합니다.

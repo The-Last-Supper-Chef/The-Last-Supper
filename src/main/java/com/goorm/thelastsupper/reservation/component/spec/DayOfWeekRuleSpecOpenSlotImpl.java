@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * - 반복 요일이 비어있지 않도록 검사합니다.
  */
 @Component
-public class DayOfWeekRuleSpecOpenSlot implements OpenSlotValidationRule {
+public class DayOfWeekRuleSpecOpenSlotImpl implements OpenSlotValidationRule {
 
 	/**
 	 * 예약 요일이 비어있는지 확인하고 예외를 발생시킵니다.

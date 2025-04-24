@@ -2,10 +2,10 @@ package com.goorm.thelastsupper.reservation.component;
 
 import org.springframework.stereotype.Component;
 
-import com.goorm.thelastsupper.reservation.component.spec.BreakRuleSpecOpenSlot;
-import com.goorm.thelastsupper.reservation.component.spec.DateRuleSpecOpenSlot;
-import com.goorm.thelastsupper.reservation.component.spec.DayOfWeekRuleSpecOpenSlot;
-import com.goorm.thelastsupper.reservation.component.spec.TimeRuleSpecOpenSlot;
+import com.goorm.thelastsupper.reservation.component.spec.BreakRuleSpecOpenSlotImpl;
+import com.goorm.thelastsupper.reservation.component.spec.DateRuleSpecOpenSlotImpl;
+import com.goorm.thelastsupper.reservation.component.spec.DayOfWeekRuleSpecOpenSlotImpl;
+import com.goorm.thelastsupper.reservation.component.spec.TimeRuleSpecOpenSlotImpl;
 import com.goorm.thelastsupper.reservation.dto.OpenSlotsCommand;
 
 import lombok.AllArgsConstructor;
@@ -15,11 +15,11 @@ import lombok.AllArgsConstructor;
  */
 @Component
 @AllArgsConstructor
-public class SlotOpeningPolicy {
-	private final DateRuleSpecOpenSlot dateRuleSpec;
-	private final TimeRuleSpecOpenSlot timeRuleSpec;
-	private final DayOfWeekRuleSpecOpenSlot dayOfWeekRuleSpec;
-	private final BreakRuleSpecOpenSlot breakRuleSpec;
+public class SlotOpeningPolicyService {
+	private final DateRuleSpecOpenSlotImpl dateRuleSpec;
+	private final TimeRuleSpecOpenSlotImpl timeRuleSpec;
+	private final DayOfWeekRuleSpecOpenSlotImpl dayOfWeekRuleSpec;
+	private final BreakRuleSpecOpenSlotImpl breakRuleSpec;
 
 	public void validateRules(OpenSlotsCommand cmd) {
 		// 1) 날짜 규칙: 시작일 유효성 및 예외 날짜 규칙

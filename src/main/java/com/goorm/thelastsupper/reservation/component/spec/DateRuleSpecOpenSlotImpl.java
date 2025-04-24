@@ -9,7 +9,7 @@ import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.exception.ReservationException;
 
 @Component
-public class DateRuleSpecOpenSlot implements OpenSlotValidationRule {
+public class DateRuleSpecOpenSlotImpl implements OpenSlotValidationRule {
 
 	/**
 	 * 시작일과 예외 날짜 리스트에 대한 검증을 수행합니다.

@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor
-public class SlotPersistenceManager {
+public class SlotPersistenceManagerService {
 
 	private final ReservationSlotRepository slotRepo;
 

@@ -8,7 +8,7 @@ import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.exception.ReservationException;
 
 @Component
-public class TimeRuleSpecOpenSlot implements OpenSlotValidationRule {
+public class TimeRuleSpecOpenSlotImpl implements OpenSlotValidationRule {
 	/**
 	 * 1) open < close 검사
 	 * 2) 운영시간과 휴식시간이 겹치거나 경계가 동일한지 검사

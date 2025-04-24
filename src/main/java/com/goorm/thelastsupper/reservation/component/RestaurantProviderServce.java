@@ -12,9 +12,8 @@ import lombok.RequiredArgsConstructor;
  */
 @Component
 @RequiredArgsConstructor
-public class RestaurantProvider {
+public class RestaurantProviderServce {
 	private final RestaurantRepository repo;
-
 	public Restaurant loadOwner(String ownerId) {
 		return repo.getReferenceById(ownerId);
 	}
