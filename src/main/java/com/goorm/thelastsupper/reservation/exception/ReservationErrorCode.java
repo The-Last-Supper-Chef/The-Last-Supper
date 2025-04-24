@@ -1,16 +1,15 @@
 package com.goorm.thelastsupper.reservation.exception;
 
-import org.springframework.http.HttpStatus;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode {
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 예약을 찾을 수 없습니다."),
 
 	// 슬롯 오픈 관련 에러
-	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 예약을 찾을 수 없습니다."),
 	START_DATE_TOO_SOON(HttpStatus.UNPROCESSABLE_ENTITY, "시작일은 최소 내일 이후여야 합니다."),
 	INVALID_EXCEPTION_DATE(HttpStatus.UNPROCESSABLE_ENTITY, "예외 날짜가 선택되었으나, 예외 날짜 리스트가 비어 있습니다."),
 	INVALID_OPERATION_TIME(HttpStatus.UNPROCESSABLE_ENTITY, "영업 시작 시간은 종료 시간 이전이어야 합니다."),

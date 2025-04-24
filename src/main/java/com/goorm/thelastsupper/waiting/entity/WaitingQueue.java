@@ -3,10 +3,7 @@ package com.goorm.thelastsupper.waiting.entity;
 import com.goorm.thelastsupper.common.entity.BaseEntity;
 import com.goorm.thelastsupper.account.entity.Account;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Table(name = "waiting_queue")

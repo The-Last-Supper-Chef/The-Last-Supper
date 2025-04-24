@@ -28,7 +28,7 @@ public class SlotOpeningController {
 	public ResponseEntity<ApiResponse<OpenSlotsResponse>> openSlots(
 		@Valid @RequestBody OpenSlotsCommand commandPayload
 	) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.successWithMessage(
+		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
 			openSlotsUseCase.execute(commandPayload), "슬롯이 성공적으로 열렸습니다."
 		));
 	}
