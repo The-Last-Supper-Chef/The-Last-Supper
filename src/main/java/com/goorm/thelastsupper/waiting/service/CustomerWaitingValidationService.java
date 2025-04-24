@@ -47,4 +47,25 @@ public class CustomerWaitingValidationService {
     public WaitingQueue waitingQueueSave(WaitingQueue waitingQueue) {
         return waitingQueueRepository.save(waitingQueue);
     }
+
+    private boolean isLastWaiting(WaitingQueue waitingQueue) {
+        Long myNumber = waitingQueue.getNumber();
+        Long maxNumber = waitingQueueRepository.findMaxNumber();
+
+        return myNumber != null && myNumber.equals(maxNumber);
+    }
+
+    public int waitingQueueDelay(Account account) {
+        WaitingQueue waitingQueue = waitingQueueRepository.findByAccountAndWaitingStatus(account, WaitingStatus.WAITING)
+                .orElseThrow(WaitingException.WaitingNotFoundException::new);
+
+        if (isLastWaiting(waitingQueue)) {
+            throw new WaitingException.AlreadyLastWaitingException();
+        }
+
+        waitingQueue.setWaitingStatus(WaitingStatus.DELAY);
+        waitingQueueRepository.save(waitingQueue);
+
+        return waitingQueue.getHeadCount();
+    }
 }

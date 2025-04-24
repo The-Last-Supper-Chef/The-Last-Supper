@@ -23,4 +23,11 @@ public class CustomerWaitingController {
 
         return ResponseEntity.ok(waitingResponse);
     }
+
+    @PostMapping("/delay")
+    public ResponseEntity<WaitingResponse> delayWaiting(@RequestParam String accountId) {
+        WaitingResponse waitingResponse = customerWaitingService.delayWaiting(accountId);
+
+        return ResponseEntity.ok(waitingResponse);
+    }
 }

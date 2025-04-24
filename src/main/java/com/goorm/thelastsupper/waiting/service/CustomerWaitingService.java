@@ -4,6 +4,7 @@ import com.goorm.thelastsupper.waiting.dto.WaitingResponse;
 import com.goorm.thelastsupper.waiting.entity.WaitingQueue;
 import com.goorm.thelastsupper.account.entity.Account;
 import com.goorm.thelastsupper.waiting.entity.WaitingStatus;
+import com.goorm.thelastsupper.waiting.exception.WaitingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,33 @@ public class CustomerWaitingService {
             .waitingStatus(WaitingStatus.WAITING)
             .number(nextNumber)
             .build();
+
+        // WaitingQueue 저장
+        waitingQueue = customerWaitingValidationService.waitingQueueSave(waitingQueue);
+
+        return WaitingResponse.toWaitingResponse(waitingQueue);
+    }
+
+    public WaitingResponse delayWaiting(String accountId) {
+        // accountId 기반으로 Account 엔티티 조회, 없으면 AccountNotFoundException throw
+        Account account = customerWaitingValidationService.validateAccount(accountId);
+
+        // WaitingSetCategory 가 OPEN 인지 조회, OPEN 이 아니라면 WaitingNotOpenException throw
+        customerWaitingValidationService.validateWaitingSetCategory();
+
+        // 현재 대기번호가 마지막 대기번호 인지 조회
+        // 기존 WaitingStatus 를 Delay 로 변경, headCount 반환
+        int headCount = customerWaitingValidationService.waitingQueueDelay(account);
+
+        // 현재 최대 순서번호 + 1
+        Long nextNumber = customerWaitingValidationService.findNextNumber();
+
+        WaitingQueue waitingQueue = WaitingQueue.builder()
+                .account(account)
+                .headCount(headCount)
+                .waitingStatus(WaitingStatus.WAITING)
+                .number(nextNumber)
+                .build();
 
         // WaitingQueue 저장
         waitingQueue = customerWaitingValidationService.waitingQueueSave(waitingQueue);
