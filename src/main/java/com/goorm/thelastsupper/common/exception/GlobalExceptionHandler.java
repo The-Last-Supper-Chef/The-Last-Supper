@@ -8,6 +8,7 @@ import com.goorm.thelastsupper.waiting.exception.WaitingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,6 +25,7 @@ public class GlobalExceptionHandler {
         FieldError fieldError = ex.getBindingResult().getFieldError();
 
         String message = fieldError != null ? fieldError.getDefaultMessage() : "검증 오류입니다.";
+		log.info("입력 오류 필드 - {}, 입력값 : {}", fieldError.getField(), fieldError.getRejectedValue());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ErrorCode.INVALID_INPUT_PARAMETER.name(), message));
@@ -51,14 +53,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> ReservationHandler(ReservationException ex) {
         ErrorResponse response = new ErrorResponse(ex.getErrorCode().name(), ex.getErrorCode().getMessage());
         return new ResponseEntity<>(response, ex.getErrorCode().getHttpStatus());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
-        ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
-        ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
-        log.info("입력값 오류 - {}", ex.getBindingResult().getFieldError());
-        return new ResponseEntity<>(response, errorCode.getHttpStatus());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
