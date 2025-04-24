@@ -27,4 +27,5 @@ public class WaitingSetting extends BaseEntity {
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     private Restaurant restaurant;
+
 }
