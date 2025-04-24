@@ -15,8 +15,8 @@ import java.time.LocalDate;
 public class ReservationUtil {
 
     public static void validateSlotIsOpen(ReservationSlot reservationSlot) {
-        if (reservationSlot.getState().isNotOpen()) {
-            log.warn("슬롯 오픈 상태 아님: slotId={}, 상태={}", reservationSlot.getId(), reservationSlot.getState());
+        if (reservationSlot.getStatus().isNotOpen()) {
+            log.warn("슬롯 오픈 상태 아님: slotId={}, 상태={}", reservationSlot.getId(), reservationSlot.getStatus());
             throw new ReservationException(ReservationErrorCode.RESERVATION_SLOT_CLOSED);
         }
         log.info("슬롯 오픈 상태 확인 완료: slotId={}", reservationSlot.getId());

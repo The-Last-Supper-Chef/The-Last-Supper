@@ -7,8 +7,8 @@ import lombok.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
+@Getter
 @Entity
 @Table(name = "reservation_slot")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,7 +23,6 @@ public class ReservationSlot extends BaseEntity {
     private LocalTime startTime;
 
     /** 날짜 + 시각 합성 (UNIQUE) */
-    @Getter
     @Column(name = "slot_date_time", nullable = false, unique = true)
     private LocalDateTime slotDateTime;
 
@@ -56,7 +55,7 @@ public class ReservationSlot extends BaseEntity {
     public void decreaseRemaining(int totalVisitors){
         remaining -= totalVisitors;
     }
-    public void increaseRemaining(Long totalVisitors){
+    public void increaseRemaining(int totalVisitors){
         remaining += totalVisitors;
     }
 

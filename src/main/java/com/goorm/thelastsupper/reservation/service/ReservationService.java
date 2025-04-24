@@ -83,13 +83,12 @@ public class ReservationService {
         log.info("당일 취소 불가 검증 시작...");
         validateNotSameDayReservation(reservationSlot);
 
-        //Todo int, long
         log.info("잔여 인원 및 OPEN 상태 검증 시작...");
         reservationSlot.increaseRemaining(reservationHistory.getReservedPeople());
-        if(reservationSlot.getRemaining() > 0 && reservationSlot.getState().equals(SlotStatus.HOLD)){
+        if(reservationSlot.getRemaining() > 0 && reservationSlot.getStatus().equals(SlotStatus.HOLD)){
             reservationSlot.setOpen();
         }
-        log.info("잔여 인원 증가 완료. slotId={}, 남은 인원={}, slot 상태={}", reservationSlot.getId(), reservationSlot.getRemaining(), reservationSlot.getState());
+        log.info("잔여 인원 증가 완료. slotId={}, 남은 인원={}, slot 상태={}", reservationSlot.getId(), reservationSlot.getRemaining(), reservationSlot.getStatus());
 
         log.info("예약 취소 시작...");
         reservationHistory.setCancel();
