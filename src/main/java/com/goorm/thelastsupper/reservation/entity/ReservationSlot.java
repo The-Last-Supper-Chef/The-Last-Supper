@@ -32,4 +32,22 @@ public class ReservationSlot extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private SlotStatus state;
+
+    // JPA의 Dirty Checking을 통해 트랜잭션 커밋 시 변경 사항이 자동 반영됩니다.
+    // 별도의 save 호출 없이도 remaining 값은 DB에 반영됩니다.
+    public void decreaseRemaining(int totalVisitors){
+        remaining -= totalVisitors;
+    }
+    public void increaseRemaining(Long totalVisitors){
+        remaining += totalVisitors;
+    }
+
+    // JPA의 Dirty Checking을 통해 트랜잭션 커밋 시 변경 사항이 자동 반영됩니다.
+    // 별도의 save 호출 없이도 SlotStatus 값은 DB에 반영됩니다.
+    public void setHold() {
+        this.state = SlotStatus.HOLD;
+    }
+    public void setOpen() {
+        this.state = SlotStatus.OPEN;
+    }
 }
