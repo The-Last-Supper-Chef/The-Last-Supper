@@ -9,8 +9,8 @@ import lombok.*;
 @Table(name = "reservation_history")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder
+@Getter
 public class ReservationHistory extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,7 +35,7 @@ public class ReservationHistory extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RejectionReason rejectionReason;
 
-    private Long reservedPeople;
+    private int reservedPeople;
 
     @Column(name = "is_visible")
     private boolean visible;
@@ -48,7 +48,7 @@ public class ReservationHistory extends BaseEntity {
                 .reservationSlot(slot)
                 .request(request)
                 .reservedStatus(ReservedStatus.CONFIRMED)
-                .reservedPeople((long) totalVisitors)
+                .reservedPeople(totalVisitors)
                 .visible(true)
                 .build();
     }
