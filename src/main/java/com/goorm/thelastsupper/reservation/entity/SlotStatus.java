@@ -5,8 +5,8 @@ public enum SlotStatus {
     HOLD,
     BLOCK;
 
-    public boolean isOpen() {
-        return this == OPEN;
+    public boolean isNotOpen() {
+        return this != OPEN;
     }
 
     public boolean isBlocked() {
