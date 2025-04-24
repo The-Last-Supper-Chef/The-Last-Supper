@@ -1,4 +1,27 @@
 package com.goorm.thelastsupper.reservation.exception;
 
-public class ReservationErrorCode {
+import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum ReservationErrorCode {
+
+	// 슬롯 오픈 관련 에러
+	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 예약을 찾을 수 없습니다."),
+	START_DATE_TOO_SOON(HttpStatus.UNPROCESSABLE_ENTITY, "시작일은 최소 내일 이후여야 합니다."),
+	INVALID_EXCEPTION_DATE(HttpStatus.UNPROCESSABLE_ENTITY, "예외 날짜가 선택되었으나, 예외 날짜 리스트가 비어 있습니다."),
+	INVALID_OPERATION_TIME(HttpStatus.UNPROCESSABLE_ENTITY, "영업 시작 시간은 종료 시간 이전이어야 합니다."),
+	OPERATING_BREAK_OVERLAP(HttpStatus.UNPROCESSABLE_ENTITY, "운영 시간과 휴식 시간이 겹칩니다."),
+	INVALID_BREAK_TIME(HttpStatus.UNPROCESSABLE_ENTITY, "휴식 구간이 설정되지 않았습니다."),
+	BREAK_OUT_OF_RANGE(HttpStatus.UNPROCESSABLE_ENTITY, "휴식 구간이 운영 시간 범위를 벗어납니다."),
+	BREAK_OVERLAP(HttpStatus.UNPROCESSABLE_ENTITY, "휴식 구간이 서로 겹칩니다."),
+	BREAK_TIME_INVALID(HttpStatus.UNPROCESSABLE_ENTITY, "휴식 시작 시간은 종료 시간보다 빨라야 합니다."),
+	INVALID_DAY_OF_WEEK(HttpStatus.UNPROCESSABLE_ENTITY, "예약 요일이 비어 있습니다."),
+	DUPLICATE_SLOT_EXISTS     (HttpStatus.CONFLICT,               "동일 시간 슬롯이 이미 존재합니다."),
+	SLOT_SAVE_FAILURE         (HttpStatus.INTERNAL_SERVER_ERROR,  "슬롯 저장 중 오류가 발생했습니다.");
+	private final HttpStatus httpStatus;
+	private final String message;
 }

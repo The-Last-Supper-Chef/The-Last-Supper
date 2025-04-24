@@ -9,7 +9,6 @@ import lombok.*;
 @Table(name = "reservation_history")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder
 public class ReservationHistory extends BaseEntity {
 
