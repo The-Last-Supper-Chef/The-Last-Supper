@@ -6,9 +6,14 @@ import com.goorm.thelastsupper.reservation.exception.ReservationException;
 import com.goorm.thelastsupper.restaurant.exception.RestaurantException;
 import com.goorm.thelastsupper.waiting.exception.WaitingException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -34,5 +39,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> ReservationHandler(ReservationException ex) {
         ErrorResponse response = new ErrorResponse(ex.getErrorCode().name(), ex.getErrorCode().getMessage());
         return new ResponseEntity<>(response, ex.getErrorCode().getHttpStatus());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
+        ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
+        ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
+        log.info("입력값 오류 - {}", ex.getBindingResult().getFieldError());
+        return new ResponseEntity<>(response, errorCode.getHttpStatus());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> MethodNotSupportedHandler(HttpRequestMethodNotSupportedException ex) {
+        ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
+        ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
+        log.info("잘못된 HTTP 메서드 - {}", ex.getMethod());
+        return new ResponseEntity<>(response, errorCode.getHttpStatus());
     }
 }
