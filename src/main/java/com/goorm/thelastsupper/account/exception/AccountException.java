@@ -8,4 +8,10 @@ import lombok.RequiredArgsConstructor;
 public class AccountException extends RuntimeException {
 
     private final AccountErrorCode errorCode;
+
+    public static class AccountDuplicationException extends AccountException {
+        public AccountDuplicationException() {
+            super(AccountErrorCode.EMAIL_DUPLICATION);
+        }
+    }
 }
