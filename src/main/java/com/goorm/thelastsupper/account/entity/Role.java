@@ -6,9 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Role {
-    CUSTOMER("고객"),
-    OWNER("점주");
+    CUSTOMER("ROLE_CUSTOMER","고객"),
+    OWNER("ROLE_OWNER","점주");
 
+    private final String code;
     private final String name;
 
 }
