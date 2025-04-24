@@ -15,4 +15,6 @@ public interface WaitingQueueRepository extends JpaRepository<WaitingQueue,Strin
 
     @Query("SELECT MAX(wq.number) FROM WaitingQueue wq")
     Long findMaxNumber();
+
+    Optional<WaitingQueue> findByAccountAndWaitingStatus(Account account, WaitingStatus waitingStatus);
 }

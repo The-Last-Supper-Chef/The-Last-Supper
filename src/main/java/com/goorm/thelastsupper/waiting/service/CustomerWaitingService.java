@@ -20,7 +20,7 @@ public class CustomerWaitingService {
         customerWaitingValidationService.validateWaitingSetCategory();
 
         // Account 기반으로 WaitingQueue 엔티티 조회, WAITING 상태의 고객이 이미 있으면 AlreadyWaitingException throw
-        customerWaitingValidationService.validateWaiting(account);
+        customerWaitingValidationService.validateAlreadyWaiting(account);
 
         // 현재 최대 순서번호 + 1
         Long nextNumber = customerWaitingValidationService.findNextNumber();
@@ -34,6 +34,18 @@ public class CustomerWaitingService {
 
         // WaitingQueue 저장
         waitingQueue = customerWaitingValidationService.waitingQueueSave(waitingQueue);
+
+        return WaitingResponse.toWaitingResponse(waitingQueue);
+    }
+
+    public WaitingResponse cancelWaiting(String accountId) {
+        // accountId 기반으로 Account 엔티티 조회, 없면 AccountNotFoundException throw
+        Account account = customerWaitingValidationService.validateAccount(accountId);
+
+        // Account 기반으로 WaitingQueue 엔티티 조회
+        // WAITING 상태의 고객이 없으면 WaitingNotFoundException throw
+        // 고객이 WAITING 중이면 WaitingStatus 를 CANCEL 로 변경
+        WaitingQueue waitingQueue = customerWaitingValidationService.waitingQueueCancel(account);
 
         return WaitingResponse.toWaitingResponse(waitingQueue);
     }
