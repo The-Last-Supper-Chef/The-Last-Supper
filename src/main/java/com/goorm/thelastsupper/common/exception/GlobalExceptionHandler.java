@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> MethodNotSupportedHandler(HttpRequestMethodNotSupportedException ex) {
-        ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
+        ErrorCode errorCode = ErrorCode.METHOD_NOT_ALLOWED;
         ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
         log.info("잘못된 HTTP 메서드 - {}", ex.getMethod());
         return new ResponseEntity<>(response, errorCode.getHttpStatus());
