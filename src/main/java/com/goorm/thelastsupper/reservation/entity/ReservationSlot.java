@@ -2,10 +2,9 @@ package com.goorm.thelastsupper.reservation.entity;
 
 import com.goorm.thelastsupper.common.entity.BaseEntity;
 import jakarta.persistence.*;
-    import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,5 +49,23 @@ public class ReservationSlot extends BaseEntity {
         s.remaining     = capacity;
         s.status        = status;
         return s;
+    }
+
+    // JPA의 Dirty Checking을 통해 트랜잭션 커밋 시 변경 사항이 자동 반영됩니다.
+    // 별도의 save 호출 없이도 remaining 값은 DB에 반영됩니다.
+    public void decreaseRemaining(int totalVisitors){
+        remaining -= totalVisitors;
+    }
+    public void increaseRemaining(Long totalVisitors){
+        remaining += totalVisitors;
+    }
+
+    // JPA의 Dirty Checking을 통해 트랜잭션 커밋 시 변경 사항이 자동 반영됩니다.
+    // 별도의 save 호출 없이도 SlotStatus 값은 DB에 반영됩니다.
+    public void setHold() {
+        this.status = SlotStatus.HOLD;
+    }
+    public void setOpen() {
+        this.status = SlotStatus.OPEN;
     }
 }

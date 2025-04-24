@@ -20,7 +20,16 @@ public enum ReservationErrorCode {
 	BREAK_TIME_INVALID(HttpStatus.UNPROCESSABLE_ENTITY, "휴식 시작 시간은 종료 시간보다 빨라야 합니다."),
 	INVALID_DAY_OF_WEEK(HttpStatus.UNPROCESSABLE_ENTITY, "예약 요일이 비어 있습니다."),
 	DUPLICATE_SLOT_EXISTS     (HttpStatus.CONFLICT,               "동일 시간 슬롯이 이미 존재합니다."),
-	SLOT_SAVE_FAILURE         (HttpStatus.INTERNAL_SERVER_ERROR,  "슬롯 저장 중 오류가 발생했습니다.");
-	private final HttpStatus httpStatus;
-	private final String message;
+	SLOT_SAVE_FAILURE         (HttpStatus.INTERNAL_SERVER_ERROR,  "슬롯 저장 중 오류가 발생했습니다."),
+
+    RESERVATION_SLOT_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 슬롯이 존재하지 않습니다."),
+    RESERVATION_SLOT_CLOSED(HttpStatus.FORBIDDEN, "현재 예약이 불가능한 슬롯입니다."),
+    RESERVATION_DUPLICATE_RESERVATION(HttpStatus.UNPROCESSABLE_ENTITY, "이미 예약이 존재합니다."),
+    RESERVATION_TIME_EXPIRED(HttpStatus.UNPROCESSABLE_ENTITY, "예약 가능 시간이 만료되었습니다."),
+    RESERVATION_CAPACITY_OVER(HttpStatus.UNPROCESSABLE_ENTITY, "예약 가능 인원을 초과했습니다."),
+    RESERVATION_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Repository save 실패" ),
+    RESERVATION_ID_MISMATCH(HttpStatus.BAD_REQUEST, "요청한 예약 ID와 일치하지 않습니다.");
+
+    private final HttpStatus httpStatus;
+    private final String message;
 }

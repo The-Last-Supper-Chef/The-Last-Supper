@@ -38,4 +38,22 @@ public class ReservationHistory extends BaseEntity {
 
     @Column(name = "is_visible")
     private boolean visible;
+
+    //registerReservation에서 history 저장하는 용도
+    //다른곳에서 사용시 메서드 수정 필요
+    public static ReservationHistory createReservation(Account account, ReservationSlot slot, String request, int totalVisitors) {
+        return ReservationHistory.builder()
+                .account(account)
+                .reservationSlot(slot)
+                .request(request)
+                .reservedStatus(ReservedStatus.CONFIRMED)
+                .reservedPeople((long) totalVisitors)
+                .visible(true)
+                .build();
+    }
+
+    public void setCancel() {
+        this.reservedStatus = ReservedStatus.CANCELED;
+    }
+
 }
