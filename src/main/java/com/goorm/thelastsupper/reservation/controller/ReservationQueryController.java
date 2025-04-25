@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -30,8 +31,15 @@ public class ReservationQueryController {
                                                                             ){
         //Date : yyyy-MM-dd
         //Time : HH:mm:ss
-        log.info("예약 취소 요청 수신 - accountId={}, reservedDate={}, reservedTime={}", accountId, date,time);
+        log.info("조회 요청 수신 - accountId={}, reservedDate={}, reservedTime={}", accountId, date,time);
 
         return ResponseEntity.ok(reservationQueryService.getMyReservationsByDate(accountId, date, time));
+    }
+
+    @GetMapping("/me/all")
+    public ResponseEntity<List<ReservationResponse>> getAllMyReservation(@RequestParam String accountId){
+
+        log.info("조회 요청 수신 - accountId={}",accountId);
+        return ResponseEntity.ok(reservationQueryService.getAllMyReservation(accountId));
     }
 }

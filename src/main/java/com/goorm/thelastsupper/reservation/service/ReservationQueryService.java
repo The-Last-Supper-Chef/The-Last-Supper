@@ -53,4 +53,15 @@ public class ReservationQueryService {
         log.warn("확정된 예약을 찾지 못함: accountId={}, date={}, time={}", accountId, date, time);
         throw new ReservationException(ReservationErrorCode.RESERVATION_NOT_FOUND);
     }
+
+    public List<ReservationResponse> getAllMyReservation(String accountId) {
+        Account account = entityFinder.getAccountById(accountId);
+        log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
+
+        List<ReservationHistory> reservationHistory = reservationHistoryRepository.findAllByAccount(account);
+
+        return reservationHistory.stream()
+                .map(ReservationResponse::mapFromHistory)
+                .toList();
+    }
 }
