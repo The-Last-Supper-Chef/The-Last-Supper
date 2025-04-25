@@ -1,7 +1,10 @@
 package com.goorm.thelastsupper.reservation.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import com.goorm.thelastsupper.reservation.entity.ReservationSlot;
 import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
@@ -24,4 +27,6 @@ public interface ReservationSlotRepository
 	 * @return 존재하면 true, 존재하지 않으면 false
 	 */
 	boolean existsBySlotDateTime(LocalDateTime slotDateTime);
+
+	Optional<ReservationSlot> findByDateAndStartTime(LocalDate date, LocalTime time);
 }
