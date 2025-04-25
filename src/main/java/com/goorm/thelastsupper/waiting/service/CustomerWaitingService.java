@@ -1,9 +1,11 @@
 package com.goorm.thelastsupper.waiting.service;
 
+import com.goorm.thelastsupper.waiting.dto.WaitingPositionResponse;
 import com.goorm.thelastsupper.waiting.dto.WaitingResponse;
 import com.goorm.thelastsupper.waiting.entity.WaitingQueue;
 import com.goorm.thelastsupper.account.entity.Account;
 import com.goorm.thelastsupper.waiting.entity.WaitingStatus;
+import com.goorm.thelastsupper.waiting.exception.WaitingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -75,5 +77,19 @@ public class CustomerWaitingService {
         waitingQueue = customerWaitingValidationService.waitingQueueSave(waitingQueue);
 
         return WaitingResponse.toWaitingResponse(waitingQueue);
+    }
+
+    public WaitingPositionResponse getWaitingPosition(String accountId) {
+        // accountId 기반으로 Account 엔티티 조회, 없면 AccountNotFoundException throw
+        Account account = customerWaitingValidationService.validateAccount(accountId);
+
+        // accountId 기반으로 WaitingQueue 엔티티 조회, WAITING 상태의 고객이 없면 WaitingNotFoundException throw
+        WaitingQueue waitingQueue = customerWaitingValidationService.validateWaitingQueue(account);
+
+        // WAITING 중인 고객 중 내 번호보다 아래인 고객 수
+        int ahead = customerWaitingValidationService.findAheadNumber(waitingQueue);
+
+        // 앞 사람 수 + 1 반환
+        return WaitingPositionResponse.toWaitingPositionResponse(ahead + 1);
     }
 }
