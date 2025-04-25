@@ -44,4 +44,32 @@ public class WaitingException extends RuntimeException{
             super(WaitingErrorCode.WAITING_SETTING_NOT_FOUND);
         }
     }
+
+    //Message:  대기열이 이미 중단되어 있습니다.
+    public static class WaitingAlreadyClosedException extends  WaitingException {
+        public WaitingAlreadyClosedException() {
+            super(WaitingErrorCode.WAITING_ALREADY_CLOSED);
+        }
+    }
+
+    //Message: 대기열이 열려있지 않습니다.
+    public static class WaitingNotOpendException extends WaitingException {
+        public WaitingNotOpendException() {
+            super(WaitingErrorCode.WAITING_NOT_OPENED);
+        }
+    }
+
+    //Message: 대기열이 이미 오픈되어 있습니다.
+    public static class WaitingAlreadyOpenException extends WaitingException {
+        public WaitingAlreadyOpenException() {
+            super(WaitingErrorCode.WAITING_ALREADY_OPEN);
+        }
+    }
+
+    //Message: 해당 매장을 찾을 수 없습니다.
+    public static class RestaurantNotFoundException extends WaitingException {
+        public RestaurantNotFoundException() {
+            super(WaitingErrorCode.RESTAURANT_NOT_FOUND);
+        }
+    }
 }
