@@ -5,8 +5,11 @@ import com.goorm.thelastsupper.reservation.entity.ReservationHistory;
 import com.goorm.thelastsupper.reservation.entity.ReservationSlot;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReservationHistoryRepository extends JpaRepository<ReservationHistory, String> {
     Optional<ReservationHistory> findByAccountAndReservationSlot(Account account, ReservationSlot reservationSlot);
+
+    List<ReservationHistory> findAllByAccountAndReservationSlot(Account account, ReservationSlot reservationSlot);
 }

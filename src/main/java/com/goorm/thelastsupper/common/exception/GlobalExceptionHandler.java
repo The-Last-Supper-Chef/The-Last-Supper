@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
 		log.error("[ReservationException] 발생", e);
 		String summaryMessage = e.getErrorCode().getMessage();
 		String detailMessage = String.format("HTTP 상태: %d, 로그 레벨: %s",
-			e.getErrorCode().getHttpStatus().value());
+			e.getErrorCode().getHttpStatus().value(),"ERROR");
 		List<String> detailList = new ArrayList<>();
 		detailList.add(detailMessage);
 		ApiResponse<?> errorResponse = ApiResponse.error(
