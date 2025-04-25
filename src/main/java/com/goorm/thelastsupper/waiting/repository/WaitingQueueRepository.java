@@ -23,4 +23,6 @@ public interface WaitingQueueRepository extends JpaRepository<WaitingQueue,Strin
 
     // 번호(number)가 주어진 값보다 작은 대기중 행 개수(순위 계산용)
     int countByWaitingStatusAndNumberLessThan(WaitingStatus status, Long number);
+
+    Optional<WaitingQueue> findFirstByWaitingStatusOrderByCreatedAtAsc(WaitingStatus waitingStatus);
 }
