@@ -12,4 +12,6 @@ public interface ReservationHistoryRepository extends JpaRepository<ReservationH
     Optional<ReservationHistory> findByAccountAndReservationSlot(Account account, ReservationSlot reservationSlot);
 
     List<ReservationHistory> findAllByAccountAndReservationSlot(Account account, ReservationSlot reservationSlot);
+
+    List<ReservationHistory> findAllByAccount(Account account);
 }
