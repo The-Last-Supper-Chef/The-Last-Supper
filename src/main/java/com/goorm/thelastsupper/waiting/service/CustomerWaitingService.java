@@ -38,6 +38,7 @@ public class CustomerWaitingService {
         return WaitingResponse.toWaitingResponse(waitingQueue);
     }
 
+
     public WaitingResponse cancelWaiting(String accountId) {
         // accountId 기반으로 Account 엔티티 조회, 없면 AccountNotFoundException throw
         Account account = customerWaitingValidationService.validateAccount(accountId);

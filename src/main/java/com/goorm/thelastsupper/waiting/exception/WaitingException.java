@@ -32,4 +32,5 @@ public class WaitingException extends RuntimeException{
             super(WaitingErrorCode.WAITING_NOT_OPEN);
         }
     }
+
 }

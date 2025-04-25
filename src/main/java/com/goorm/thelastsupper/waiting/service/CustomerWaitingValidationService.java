@@ -55,4 +55,5 @@ public class CustomerWaitingValidationService {
         waitingQueue.setWaitingStatus(WaitingStatus.CANCEL);
         return waitingQueueRepository.save(waitingQueue);
     }
+
 }
