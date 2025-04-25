@@ -26,7 +26,7 @@ public class CustomerWaitingValidationService {
 
     public void validateWaitingSetCategory() {
         WaitingSetting waitingSetting = waitingSettingRepository.findFirstByOrderByIdDesc()
-                .orElseThrow(WaitingException.WaitingNotFoundException::new);
+                .orElseThrow(WaitingException.WaitingSettingNotFoundException::new);
 
         if(waitingSetting.getWaitingSetCategory() != WaitingSetCategory.OPEN){
             throw new WaitingException.WaitingNotOpenException();
@@ -48,12 +48,35 @@ public class CustomerWaitingValidationService {
         return waitingQueueRepository.save(waitingQueue);
     }
 
+    private boolean isLastWaiting(WaitingQueue waitingQueue) {
+        Long myNumber = waitingQueue.getNumber();
+        Long maxNumber = waitingQueueRepository.findMaxNumber();
+
+        return myNumber != null && myNumber.equals(maxNumber);
+    }
+
     public WaitingQueue waitingQueueCancel(Account account) {
         WaitingQueue waitingQueue = waitingQueueRepository.findByAccountAndWaitingStatus(account, WaitingStatus.WAITING)
                 .orElseThrow(WaitingException.WaitingNotFoundException::new);
 
         waitingQueue.setWaitingStatus(WaitingStatus.CANCEL);
-        return waitingQueueRepository.save(waitingQueue);
+        waitingQueueRepository.save(waitingQueue);
+
+        return waitingQueue;
+    }
+
+    public int waitingQueueDelay(Account account) {
+        WaitingQueue waitingQueue = waitingQueueRepository.findByAccountAndWaitingStatus(account, WaitingStatus.WAITING)
+                .orElseThrow(WaitingException.WaitingNotFoundException::new);
+
+        if (isLastWaiting(waitingQueue)) {
+            throw new WaitingException.AlreadyLastWaitingException();
+        }
+
+        waitingQueue.setWaitingStatus(WaitingStatus.DELAY);
+        waitingQueueRepository.save(waitingQueue);
+
+        return waitingQueue.getHeadCount();
     }
 
 }

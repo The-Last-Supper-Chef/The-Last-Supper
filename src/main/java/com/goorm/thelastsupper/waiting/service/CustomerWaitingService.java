@@ -38,7 +38,6 @@ public class CustomerWaitingService {
         return WaitingResponse.toWaitingResponse(waitingQueue);
     }
 
-
     public WaitingResponse cancelWaiting(String accountId) {
         // accountId 기반으로 Account 엔티티 조회, 없면 AccountNotFoundException throw
         Account account = customerWaitingValidationService.validateAccount(accountId);
@@ -47,6 +46,33 @@ public class CustomerWaitingService {
         // WAITING 상태의 고객이 없으면 WaitingNotFoundException throw
         // 고객이 WAITING 중이면 WaitingStatus 를 CANCEL 로 변경
         WaitingQueue waitingQueue = customerWaitingValidationService.waitingQueueCancel(account);
+
+        return WaitingResponse.toWaitingResponse(waitingQueue);
+    }
+
+    public WaitingResponse delayWaiting(String accountId) {
+        // accountId 기반으로 Account 엔티티 조회, 없으면 AccountNotFoundException throw
+        Account account = customerWaitingValidationService.validateAccount(accountId);
+
+        // WaitingSetCategory 가 OPEN 인지 조회, OPEN 이 아니라면 WaitingNotOpenException throw
+        customerWaitingValidationService.validateWaitingSetCategory();
+
+        // 현재 대기번호가 마지막 대기번호 인지 조회
+        // 기존 WaitingStatus 를 Delay 로 변경, headCount 반환
+        int headCount = customerWaitingValidationService.waitingQueueDelay(account);
+
+        // 현재 최대 순서번호 + 1
+        Long nextNumber = customerWaitingValidationService.findNextNumber();
+
+        WaitingQueue waitingQueue = WaitingQueue.builder()
+                .account(account)
+                .headCount(headCount)
+                .waitingStatus(WaitingStatus.WAITING)
+                .number(nextNumber)
+                .build();
+
+        // WaitingQueue 저장
+        waitingQueue = customerWaitingValidationService.waitingQueueSave(waitingQueue);
 
         return WaitingResponse.toWaitingResponse(waitingQueue);
     }
