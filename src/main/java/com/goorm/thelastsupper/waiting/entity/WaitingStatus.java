@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum WaitingStatus {
     WAITING("대기중"),
     CANCEL("취소"),
-    FINISH("완료"),
+    SUCCESS("완료"),
     DELAY("딜레이");
 
     private final String name;

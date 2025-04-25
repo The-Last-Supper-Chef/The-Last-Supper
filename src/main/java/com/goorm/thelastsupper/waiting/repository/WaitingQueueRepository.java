@@ -17,4 +17,6 @@ public interface WaitingQueueRepository extends JpaRepository<WaitingQueue,Strin
     Long findMaxNumber();
 
     Optional<WaitingQueue> findByAccountAndWaitingStatus(Account account, WaitingStatus waitingStatus);
+
+    Optional<WaitingQueue> findFirstByWaitingStatusOrderByCreatedAtAsc(WaitingStatus waitingStatus);
 }
