@@ -26,14 +26,14 @@ public class CustomerWaitingValidationService {
 
     public void validateWaitingSetCategory() {
         WaitingSetting waitingSetting = waitingSettingRepository.findFirstByOrderByIdDesc()
-                .orElseThrow(WaitingException.WaitingNotFoundException::new);
+                .orElseThrow(WaitingException.WaitingSettingNotFoundException::new);
 
         if(waitingSetting.getWaitingSetCategory() != WaitingSetCategory.OPEN){
             throw new WaitingException.WaitingNotOpenException();
         }
     }
 
-    public void validateWaiting(Account account) {
+    public void validateAlreadyWaiting(Account account) {
         if(waitingQueueRepository.existsByAccountAndWaitingStatus(account, WaitingStatus.WAITING)){
             throw new WaitingException.AlreadyWaitingException();
         }
@@ -55,6 +55,16 @@ public class CustomerWaitingValidationService {
         return myNumber != null && myNumber.equals(maxNumber);
     }
 
+    public WaitingQueue waitingQueueCancel(Account account) {
+        WaitingQueue waitingQueue = waitingQueueRepository.findByAccountAndWaitingStatus(account, WaitingStatus.WAITING)
+                .orElseThrow(WaitingException.WaitingNotFoundException::new);
+
+        waitingQueue.setWaitingStatus(WaitingStatus.CANCEL);
+        waitingQueueRepository.save(waitingQueue);
+
+        return waitingQueue;
+    }
+
     public int waitingQueueDelay(Account account) {
         WaitingQueue waitingQueue = waitingQueueRepository.findByAccountAndWaitingStatus(account, WaitingStatus.WAITING)
                 .orElseThrow(WaitingException.WaitingNotFoundException::new);
@@ -68,4 +78,5 @@ public class CustomerWaitingValidationService {
 
         return waitingQueue.getHeadCount();
     }
+
 }
