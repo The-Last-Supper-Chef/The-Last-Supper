@@ -24,6 +24,7 @@ public class CustomerWaitingController {
         return ResponseEntity.ok(waitingResponse);
     }
 
+
     @PostMapping("/cancel")
     public ResponseEntity<WaitingResponse> cancelWaiting(@RequestParam String accountId) {
         WaitingResponse waitingResponse = customerWaitingService.cancelWaiting(accountId);
