@@ -22,6 +22,7 @@ public class Restaurant extends BaseEntity {
 
     private String restaurantLocation;
 
+    @Enumerated(EnumType.STRING)
     private Industry industry;
 
     private String restaurantNumber;
