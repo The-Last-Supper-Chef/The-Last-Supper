@@ -32,4 +32,16 @@ public class WaitingException extends RuntimeException{
             super(WaitingErrorCode.WAITING_NOT_OPEN);
         }
     }
+
+    public static class AlreadyLastWaitingException extends WaitingException {
+        public AlreadyLastWaitingException() {
+            super(WaitingErrorCode.ALREADY_LAST_WAITING);
+        }
+    }
+
+    public static class WaitingSettingNotFoundException extends WaitingException {
+        public WaitingSettingNotFoundException() {
+            super(WaitingErrorCode.WAITING_SETTING_NOT_FOUND);
+        }
+    }
 }

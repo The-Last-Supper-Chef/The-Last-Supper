@@ -33,7 +33,7 @@ public class CustomerWaitingValidationService {
         }
     }
 
-    public void validateAlreadyWaiting(Account account) {
+    public void validateWaiting(Account account) {
         if(waitingQueueRepository.existsByAccountAndWaitingStatus(account, WaitingStatus.WAITING)){
             throw new WaitingException.AlreadyWaitingException();
         }
@@ -48,11 +48,24 @@ public class CustomerWaitingValidationService {
         return waitingQueueRepository.save(waitingQueue);
     }
 
-    public WaitingQueue waitingQueueCancel(Account account) {
+    private boolean isLastWaiting(WaitingQueue waitingQueue) {
+        Long myNumber = waitingQueue.getNumber();
+        Long maxNumber = waitingQueueRepository.findMaxNumber();
+
+        return myNumber != null && myNumber.equals(maxNumber);
+    }
+
+    public int waitingQueueDelay(Account account) {
         WaitingQueue waitingQueue = waitingQueueRepository.findByAccountAndWaitingStatus(account, WaitingStatus.WAITING)
                 .orElseThrow(WaitingException.WaitingNotFoundException::new);
 
-        waitingQueue.setWaitingStatus(WaitingStatus.CANCEL);
-        return waitingQueueRepository.save(waitingQueue);
+        if (isLastWaiting(waitingQueue)) {
+            throw new WaitingException.AlreadyLastWaitingException();
+        }
+
+        waitingQueue.setWaitingStatus(WaitingStatus.DELAY);
+        waitingQueueRepository.save(waitingQueue);
+
+        return waitingQueue.getHeadCount();
     }
 }
