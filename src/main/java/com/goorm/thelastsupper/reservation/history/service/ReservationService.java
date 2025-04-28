@@ -28,15 +28,15 @@ public class ReservationService {
 
     private final ReservationTimeSlotRepository reservationTimeSlotRepository;
     private final ReservationHistoryRepository reservationHistoryRepository;
-    private final AccountRepository accountRepository;
+    private final EntityFinder entityFinder;
 
     @Transactional
     public ReservationResponse registerReservation(String accountId, @Valid ReservationRequest request) {
 
-        ReservationSlot reservationSlot = getReservationSlotById(request.slotId());
+        ReservationSlot reservationSlot = entityFinder.getReservationSlotById(request.slotId());
         log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
 
-        Account account = getAccountById(accountId);
+        Account account = entityFinder.getAccountById(accountId);
         log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
 
         log.info("슬롯 오픈 상태 검증 시작...");
@@ -70,11 +70,11 @@ public class ReservationService {
     @Transactional
     public void cancelReservation(String slotId, String historyId, String accountId) {
 
-        ReservationSlot reservationSlot = getReservationSlotById(slotId);
+        ReservationSlot reservationSlot = entityFinder.getReservationSlotById(slotId);
         log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
 
         log.info("예약 존재 여부 확인 시작...");
-        ReservationHistory reservationHistory = getHistoryById(historyId);
+        ReservationHistory reservationHistory = entityFinder.getHistoryById(historyId);
         validateReservationStatus(reservationHistory);
 
         log.info("본인 여부 확인 시작...");
@@ -98,7 +98,7 @@ public class ReservationService {
     @Transactional
     public ReservationResponse modifyReservation(String historyId, String accountId, ReservationRequest request) {
 
-        ReservationHistory reservationHistory = getHistoryById(historyId);
+        ReservationHistory reservationHistory = entityFinder.getHistoryById(historyId);
 
         String historyAccountID = reservationHistory.getAccount().getId();
 

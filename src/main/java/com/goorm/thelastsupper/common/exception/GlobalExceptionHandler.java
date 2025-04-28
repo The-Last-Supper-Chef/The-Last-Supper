@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.goorm.thelastsupper.account.exception.AccountException;
 import com.goorm.thelastsupper.common.dto.ErrorResponse;
-import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.common.exception.SlotAlreadyExistsException;
+import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
+import com.goorm.thelastsupper.reservation.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.exception.SlotAlreadyExistsException;
 import com.goorm.thelastsupper.restaurant.exception.ApiResponse;
 import com.goorm.thelastsupper.restaurant.exception.RestaurantException;
 import com.goorm.thelastsupper.waiting.exception.WaitingException;
