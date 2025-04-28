@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum WaitingSetCategory {
     OPEN("열림"),
-    BLOCK("차단"),
-    CLOSE("마감");
+    PAUSE("중단"),
+    CLOSE("종료");
 
     private final String name;
 }

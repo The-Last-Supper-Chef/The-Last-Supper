@@ -14,9 +14,16 @@ public class WaitingSettingController {
 
     private final WaitingSettingService waitingSettingService;
 
+
     @PostMapping("/open")
     public ResponseEntity<WaitingSettingResponse> open(@RequestBody WaitingSettingRequest request) {
         WaitingSettingResponse response = waitingSettingService.openWaiting(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/pause")
+    public ResponseEntity<WaitingSettingResponse> pause(@RequestBody WaitingSettingRequest request) {
+        WaitingSettingResponse response = waitingSettingService.pauseWaiting(request);
         return ResponseEntity.ok(response);
     }
 

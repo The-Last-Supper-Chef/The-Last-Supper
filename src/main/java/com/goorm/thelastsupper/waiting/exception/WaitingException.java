@@ -46,9 +46,9 @@ public class WaitingException extends RuntimeException{
     }
 
     //Message:  대기열이 이미 중단되어 있습니다.
-    public static class WaitingAlreadyClosedException extends  WaitingException {
-        public WaitingAlreadyClosedException() {
-            super(WaitingErrorCode.WAITING_ALREADY_CLOSED);
+    public static class WaitingAlreadyPausedException extends  WaitingException {
+        public WaitingAlreadyPausedException() {
+            super(WaitingErrorCode.WAITING_ALREADY_PAUSED);
         }
     }
 
@@ -70,6 +70,20 @@ public class WaitingException extends RuntimeException{
     public static class RestaurantNotFoundException extends WaitingException {
         public RestaurantNotFoundException() {
             super(WaitingErrorCode.RESTAURANT_NOT_FOUND);
+        }
+    }
+
+    //Message: 대기열이 이미 종료되었습니다.
+    public static class WaitingAlreadyClosedException extends WaitingException {
+        public WaitingAlreadyClosedException() {
+            super(WaitingErrorCode.WAITING_ALREADY_CLOSED);
+        }
+    }
+
+    //Message: 매장 ID는 필수 값입니다.
+    public static class RestaurantIdRequiredException extends WaitingException {
+        public RestaurantIdRequiredException() {
+            super(WaitingErrorCode.RESTAURANT_ID_REQUIRED);
         }
     }
 }
