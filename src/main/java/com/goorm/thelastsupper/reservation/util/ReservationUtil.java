@@ -1,12 +1,12 @@
 package com.goorm.thelastsupper.reservation.util;
 
 import com.goorm.thelastsupper.account.entity.Account;
-import com.goorm.thelastsupper.reservation.entity.ReservationHistory;
-import com.goorm.thelastsupper.reservation.entity.ReservationSlot;
-import com.goorm.thelastsupper.reservation.entity.ReservedStatus;
-import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.repository.ReservationHistoryRepository;
+import com.goorm.thelastsupper.reservation.history.entity.ReservationHistory;
+import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
+import com.goorm.thelastsupper.reservation.history.entity.ReservedStatus;
+import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
+import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.history.repository.ReservationHistoryRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;

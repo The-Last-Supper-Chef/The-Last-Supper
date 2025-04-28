@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.goorm.thelastsupper.account.exception.AccountException;
 import com.goorm.thelastsupper.common.dto.ErrorResponse;
-import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.exception.SlotAlreadyExistsException;
+import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
+import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.common.exception.SlotAlreadyExistsException;
 import com.goorm.thelastsupper.restaurant.exception.ApiResponse;
 import com.goorm.thelastsupper.restaurant.exception.RestaurantException;
 import com.goorm.thelastsupper.waiting.exception.WaitingException;
@@ -68,30 +68,27 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ReservationException.class)
 	protected ResponseEntity<ApiResponse<?>> handlReservationException(ReservationException e) {
 		log.error("[ReservationException] 발생", e);
-		String summaryMessage = e.getErrorCode().getMessage();
-		String detailMessage = String.format("HTTP 상태: %d, 로그 레벨: %s",
-			e.getErrorCode().getHttpStatus().value());
+		String summaryMessage = e.getMessage();
+
 		List<String> detailList = new ArrayList<>();
-		detailList.add(detailMessage);
-		ApiResponse<?> errorResponse = ApiResponse.error(
+		detailList.add(String.valueOf(e.getErrorCode().getHttpStatus().value()));
+		return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(ApiResponse.error(
 			summaryMessage,
 			detailList,
-			e.getErrorCode().getHttpStatus().value()
-		);
-		return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
+			e.getErrorCode().getHttpStatus()
+		));
 	}
 
 	@ExceptionHandler(SlotAlreadyExistsException.class)
 	public ResponseEntity<ApiResponse<?>> handleSlotAlreadyExistsException(SlotAlreadyExistsException e) {
 		// 예외 메시지와 에러 코드 처리
 		String message = e.getMessage();  // 예외에서 메시지를 추출
-		ReservationErrorCode errorCode = e.getErrorCode();  // 에러 코드 추출
 
 		// ApiResponse 객체를 생성하고, 메시지 및 코드 전달
 		ApiResponse<?> response = ApiResponse.error(
 			message,
 			List.of(message),
-			HttpStatus.BAD_REQUEST.value()
+			HttpStatus.BAD_REQUEST
 		);
 
 		// 적절한 HTTP 상태 코드와 함께 응답 반환
@@ -119,15 +116,13 @@ public class GlobalExceptionHandler {
 			String[] codes = fieldError.getCodes();
 			boolean isMissing = false;
 			boolean isTypeMismatch = false;
-			if (codes != null) {
-				for (String code : codes) {
-					if (code != null) {
-						if (code.contains("NotNull") || code.contains("NotBlank") || code.contains("NotEmpty")) {
-							isMissing = true;
-						}
-						if (code.contains("typeMismatch")) {
-							isTypeMismatch = true;
-						}
+			for (String code : codes) {
+				if (code != null) {
+					if (code.contains("NotNull") || code.contains("NotBlank") || code.contains("NotEmpty")) {
+						isMissing = true;
+					}
+					if (code.contains("typeMismatch")) {
+						isTypeMismatch = true;
 					}
 				}
 			}
@@ -143,7 +138,7 @@ public class GlobalExceptionHandler {
 		ApiResponse<?> errorResponse = ApiResponse.error(
 			summaryMessage,
 			detailList,
-			ErrorCode.INVALID_INPUT_PARAMETER.getHttpStatus().value()
+			ErrorCode.INVALID_INPUT_PARAMETER.getHttpStatus()
 		);
 		return ResponseEntity.status(ErrorCode.INVALID_INPUT_PARAMETER.getHttpStatus()).body(errorResponse);
 	}
