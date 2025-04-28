@@ -28,5 +28,4 @@ public interface WaitingQueueRepository extends JpaRepository<WaitingQueue,Strin
     int countByWaitingStatusAndNumberLessThan(WaitingStatus status, Long number);
 
     Optional<WaitingQueue> findFirstByWaitingStatusOrderByCreatedAtAsc(WaitingStatus waitingStatus);
-
 }

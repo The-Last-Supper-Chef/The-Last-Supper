@@ -79,4 +79,12 @@ public class CustomerWaitingValidationService {
         return waitingQueue.getHeadCount();
     }
 
+    public WaitingQueue validateWaitingQueue(Account account) {
+        return waitingQueueRepository.findByAccountAndWaitingStatus(account, WaitingStatus.WAITING)
+                .orElseThrow(WaitingException.WaitingNotFoundException::new);
+    }
+
+    public int findAheadNumber(WaitingQueue waitingQueue) {
+        return waitingQueueRepository.countByWaitingStatusAndNumberLessThan(WaitingStatus.WAITING, waitingQueue.getNumber());
+    }
 }
