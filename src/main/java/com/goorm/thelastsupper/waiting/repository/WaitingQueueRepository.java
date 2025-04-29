@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +18,8 @@ public interface WaitingQueueRepository extends JpaRepository<WaitingQueue,Strin
     Long findMaxNumber();
 
     Optional<WaitingQueue> findByAccountAndWaitingStatus(Account account, WaitingStatus waitingStatus);
+
+    List<WaitingQueue> findAllByWaitingStatus(WaitingStatus waitingStatus);
 
     // 특정 계정의 현재 대기행 조회
     Optional<WaitingQueue> findByAccount_IdAndWaitingStatus(String accountId, WaitingStatus status);

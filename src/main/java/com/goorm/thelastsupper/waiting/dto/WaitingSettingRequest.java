@@ -11,7 +11,7 @@ public record WaitingSettingRequest(String restaurantId, WaitingSetCategory cate
 
     public WaitingSettingRequest {
         if (restaurantId == null) {
-            throw new WaitingException(WaitingErrorCode.RESTAURANT_ID_REQUIRED);
+            throw new WaitingException.RestaurantIdRequiredException();
         }
     }
 
@@ -21,8 +21,4 @@ public record WaitingSettingRequest(String restaurantId, WaitingSetCategory cate
                     .waitingSetCategory(category)
                     .build();
         }
-
-
-
-
     }
