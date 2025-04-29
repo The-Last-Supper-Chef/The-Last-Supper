@@ -59,6 +59,6 @@ public record OpenSlotsCommandRequest(
 
 	@NotNull(message = "슬롯 단위(slotDuration)는 필수 입력 값입니다.")
 	@Min(value = 1,  message = "입장 인원은 1명 이상이어야 합니다.")
-	@Max(value = 50, message = "입장 인원은 50명을 초과할 수 없습니다.")
+	// @Max(value = 50, message = "입장 인원은 50명을 초과할 수 없습니다.")
 	int capacity
 ) { }

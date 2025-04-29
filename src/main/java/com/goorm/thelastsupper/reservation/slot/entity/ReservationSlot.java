@@ -67,8 +67,13 @@ public class ReservationSlot extends BaseEntity {
     public void setOpen() {
         this.status = SlotStatus.OPEN;
     }
+    public void setBlock() {
+        this.status = SlotStatus.BLOCK;
+    }
 
     public ReservationSlotDTO toDTO() {
         return ReservationSlotDTO.from(this);
     }
+
+
 }

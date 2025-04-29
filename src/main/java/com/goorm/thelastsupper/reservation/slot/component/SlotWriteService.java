@@ -78,4 +78,17 @@ public class SlotWriteService {
 			ReservationErrorCode.DUPLICATE_SLOT_EXISTS, ex);
 	}
 
+	public void save(ReservationSlot slot) {
+		try {
+			jpaSlotWriteRepository.save(slot);
+			jpaSlotWriteRepository.flush();  // 즉시 INSERT → 제약 위반 검출
+		} catch (OptimisticLockException ex) {
+			handleOptimisticLockException(ex);
+		} catch (DataIntegrityViolationException ex) {
+			handleDataIntegrityViolationException(ex);
+		} catch (DataAccessException ex) {
+			log.error("ReservationSlotWriteService.save() - DataAccessException: {}", ex.getMessage());
+			throw new ReservationException(ReservationErrorCode.SLOT_SAVE_FAILURE, ex);
+		}
+	}
 }

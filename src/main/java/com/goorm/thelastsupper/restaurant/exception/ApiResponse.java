@@ -8,8 +8,6 @@ import org.springframework.validation.FieldError;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.goorm.thelastsupper.reservation.plan.dto.ReservationPlanResponse;
-
 @Getter
 public class ApiResponse<T> {
 	private final ResultType result;        // 성공/실패 여부
@@ -75,13 +73,15 @@ public class ApiResponse<T> {
 		return errorList;
 	}
 
-	public static ApiResponse<List<ReservationPlanResponse>> success(List<ReservationPlanResponse> execute, String s) {
+	public static <T> ApiResponse<T> success(T data, String message) {
 		return new ApiResponse<>(
 			ResultType.SUCCESS,
 			HttpStatus.OK.value(),
-			s,
+			message,
 			null,
-			execute
+			data
 		);
 	}
+
+
 }

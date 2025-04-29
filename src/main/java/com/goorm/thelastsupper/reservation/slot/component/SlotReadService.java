@@ -5,7 +5,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
+import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotDTO;
+import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
 import com.goorm.thelastsupper.reservation.slot.repository.JpaSlotReadRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,12 @@ public class SlotReadService {
 			.stream()
 			.map(ReservationSlotDTO::from)
 			.collect(Collectors.groupingBy(ReservationSlotDTO::planId));
+	}
+
+	public ReservationSlot checkSlotExistence(String slotId) {
+		return slotRepository.findById(slotId)
+			.orElseThrow(() -> new ReservationException(
+				ReservationErrorCode.RESERVATION_SLOT_NOT_FOUND, "해당 슬롯을 찾을 수 없습니다."));
 	}
 
 }
