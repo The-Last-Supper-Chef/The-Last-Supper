@@ -1,4 +1,4 @@
-package com.goorm.thelastsupper.reservation.slot.service;
+package com.goorm.thelastsupper.reservation.slot.component;
 
 import java.util.List;
 import java.util.Map;
@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotDTO;
-import com.goorm.thelastsupper.reservation.slot.repository.ReservationSlotJpaRepository;
+import com.goorm.thelastsupper.reservation.slot.repository.JpaSlotReadRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class SlotReadService {
-	private final ReservationSlotJpaRepository slotRepository;
+	private final JpaSlotReadRepository slotRepository;
 
 	/**
 	 * 1) 주어진 Plan ID 에 해당하는 슬롯만 골라서 DTO 로 변환한 뒤

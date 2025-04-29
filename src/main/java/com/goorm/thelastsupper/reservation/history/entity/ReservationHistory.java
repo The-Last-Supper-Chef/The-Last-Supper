@@ -5,7 +5,10 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.goorm.thelastsupper.common.entity.BaseEntity;
 import com.goorm.thelastsupper.account.entity.Account;
+import com.goorm.thelastsupper.reservation.plan.dto.OpenSlotsCommandRequest;
+import com.goorm.thelastsupper.reservation.plan.entity.ReservationPlan;
 import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
+import com.goorm.thelastsupper.restaurant.entity.Restaurant;
 
 import jakarta.persistence.*;
 import lombok.*;

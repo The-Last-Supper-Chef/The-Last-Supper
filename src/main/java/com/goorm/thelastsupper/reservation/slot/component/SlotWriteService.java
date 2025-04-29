@@ -1,10 +1,11 @@
-package com.goorm.thelastsupper.reservation.slot.service;
+package com.goorm.thelastsupper.reservation.slot.component;
 
 import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
 import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.common.exception.SlotAlreadyExistsException;
-import com.goorm.thelastsupper.reservation.slot.repository.ReservationTimeSlotRepository;
+import com.goorm.thelastsupper.reservation.slot.repository.JpaSlotReadRepository;
+import com.goorm.thelastsupper.reservation.slot.repository.JpaSlotWriteRepository;
+import com.goorm.thelastsupper.reservation.slot.repository.SlotWriteRepository;
 
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +27,8 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class SlotWriteService {
-	private final ReservationTimeSlotRepository timeSlotRepository;
+	private final JpaSlotWriteRepository jpaSlotWriteRepository;
+	private final JpaSlotReadRepository jpaSlotReadRepository;
 
 	/**
 	 * 시간 슬롯들을 저장하는 메서드.
@@ -47,8 +48,8 @@ public class SlotWriteService {
 	 */
 	private void saveSlots(List<ReservationSlot> slots) {
 		try {
-			timeSlotRepository.saveAll(slots);
-			timeSlotRepository.flush();  // 즉시 INSERT → 제약 위반 검출
+			jpaSlotWriteRepository.saveAll(slots);
+			jpaSlotWriteRepository.flush();  // 즉시 INSERT → 제약 위반 검출
 		} catch (OptimisticLockException ex) {
 			handleOptimisticLockException(ex);
 		} catch (DataIntegrityViolationException ex) {
@@ -73,37 +74,8 @@ public class SlotWriteService {
 	 * @param ex 발생한 데이터 무결성 위반 예외
 	 */
 	private void handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-		var root = ex.getMostSpecificCause();
-		log.error("ReservationSlotWriteService.saveSlots() - DataIntegrityViolationException: {}", root.getMessage());
-
-		if (root instanceof org.hibernate.exception.ConstraintViolationException cve) {
-			// 실제 제약 이름 가져오기 (H2가 자동 생성한 이름도 다를 수 있으니 toLowerCase 로 비교)
-			String constraint = Optional.ofNullable(cve.getConstraintName())
-				.map(String::toLowerCase)
-				.orElse("");
-
-			// 슬롯 중복 제약 (slot_date_time)
-			if (constraint.contains("uk_slot_datetime")
-				|| constraint.contains("uktl46r75bflh7mrd6tbjx3wlxk")) {
-				throw new ReservationException(
-					ReservationErrorCode.DUPLICATE_SLOT_EXISTS,
-					"동일한 슬롯이 이미 존재합니다"
-				);
-			}
-
-			// (혹시 플랜 중복도 이 메서드에서 처리하고 싶다면 아래처럼 추가)
-			if (constraint.contains("uk_restaurant_plan_date")
-				|| constraint.contains("uk8tuq913epsa1ix3k9g7h35q35")) {
-				throw new ReservationException(
-					ReservationErrorCode.RESERVATION_PLAN_ALREADY_EXISTS,
-					"해당 매장의 그 날짜 계획이 이미 존재합니다."
-				);
-			}
-		}
-
-		// 그 외 제약 위반은 일반 저장 오류로
 		throw new ReservationException(
-			ReservationErrorCode.SLOT_SAVE_FAILURE, ex);
+			ReservationErrorCode.DUPLICATE_SLOT_EXISTS, ex);
 	}
 
 }

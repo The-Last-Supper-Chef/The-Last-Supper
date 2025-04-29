@@ -1,7 +1,8 @@
-package com.goorm.thelastsupper.reservation.controller;
+package com.goorm.thelastsupper.reservation.history.controller;
 
-import com.goorm.thelastsupper.reservation.dto.ReservationResponse;
-import com.goorm.thelastsupper.reservation.service.ReservationQueryService;
+import com.goorm.thelastsupper.reservation.history.dto.ReservationResponse;
+import com.goorm.thelastsupper.reservation.history.service.ReservationQueryService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,9 +25,9 @@ public class ReservationQueryController {
     private final ReservationQueryService reservationQueryService;
 
     @GetMapping("/me")
-    public ResponseEntity<ReservationResponse> getMyReservationsByDate(@RequestParam String accountId,
-                                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time
+    public ResponseEntity<ReservationResponse> getMyReservationsByDate(@RequestParam("accountId") String accountId,
+                                                                       @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                                       @RequestParam("time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time
 
                                                                             ){
         //Date : yyyy-MM-dd
@@ -37,7 +38,7 @@ public class ReservationQueryController {
     }
 
     @GetMapping("/me/all")
-    public ResponseEntity<List<ReservationResponse>> getAllMyReservation(@RequestParam String accountId){
+    public ResponseEntity<List<ReservationResponse>> getAllMyReservation(@RequestParam("accountId") String accountId){
 
         log.info("조회 요청 수신 - accountId={}",accountId);
         return ResponseEntity.ok(reservationQueryService.getAllMyReservation(accountId));

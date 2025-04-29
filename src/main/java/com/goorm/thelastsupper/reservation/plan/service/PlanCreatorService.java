@@ -20,6 +20,8 @@ import java.util.stream.Stream;
 
 /**
  * 예약 슬롯 오픈 정책을 검증하는 컴포넌트입니다.
+ * - 결합: RestaurantQueryService, PlanReadService, PlanWriteService
+ * - 응집: 예약 계획 생성 및 저장
  */
 @Slf4j
 @Component

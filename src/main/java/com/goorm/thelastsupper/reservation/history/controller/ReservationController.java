@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -24,7 +23,7 @@ public class ReservationController {
         @RequestParam("accountId") String accountId
     ){
 
-        log.info("예약 취소 요청 수신 - slotId={}, accountId={}", request.slotId(), accountId);
+        log.info("예약 요청 수신 - slotId={}, accountId={}", request.slotId(), accountId);
         ReservationResponse reservationResponse = reservationService.registerReservation(accountId,request);
 
         return ResponseEntity.ok(reservationResponse);
@@ -32,9 +31,9 @@ public class ReservationController {
 
     @DeleteMapping("/{historyId}")
 //    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReservationResponse> cancelReservation(@PathVariable String historyId,
-                                                                 @RequestParam String slotId,
-                                                                 @RequestParam String accountId
+    public ResponseEntity<ReservationResponse> cancelReservation(@PathVariable("historyId") String historyId,
+                                                                 @RequestParam("slotId") String slotId,
+                                                                 @RequestParam("accountId") String accountId
     ){
         log.info("예약 취소 요청 수신 - slotId={}, slotId={}, accountId={}", historyId, slotId, accountId);
         reservationService.cancelReservation(slotId, historyId, accountId);
@@ -43,8 +42,8 @@ public class ReservationController {
 
     @PatchMapping("/{historyId}")
 //    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReservationResponse> modifyReservation(@PathVariable String historyId,
-                                                                 @RequestParam String accountId,
+    public ResponseEntity<ReservationResponse> modifyReservation(@PathVariable("historyId") String historyId,
+                                                                 @RequestParam("accountId") String accountId,
                                                                  @Valid @RequestBody ReservationRequest request
     ){
         log.info("예약 수정 요청 수신 - slotId={}, accountId={}, slotId={}", historyId, accountId, request.slotId());

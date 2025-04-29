@@ -1,14 +1,15 @@
-package com.goorm.thelastsupper.reservation.service;
+package com.goorm.thelastsupper.reservation.history.service;
 
 import com.goorm.thelastsupper.account.entity.Account;
-import com.goorm.thelastsupper.reservation.dto.ReservationResponse;
-import com.goorm.thelastsupper.reservation.entity.ReservationHistory;
-import com.goorm.thelastsupper.reservation.entity.ReservationSlot;
-import com.goorm.thelastsupper.reservation.entity.ReservedStatus;
-import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.repository.ReservationHistoryRepository;
-import com.goorm.thelastsupper.reservation.repository.ReservationSlotRepository;
+
+import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
+import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.history.dto.ReservationResponse;
+import com.goorm.thelastsupper.reservation.history.entity.ReservationHistory;
+import com.goorm.thelastsupper.reservation.history.entity.ReservedStatus;
+import com.goorm.thelastsupper.reservation.history.repository.ReservationHistoryRepository;
+import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
+import com.goorm.thelastsupper.reservation.slot.repository.JpaSlotReadRepository;
 import com.goorm.thelastsupper.reservation.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +26,12 @@ public class ReservationQueryService {
 
     private final EntityFinder entityFinder;
     private final ReservationHistoryRepository reservationHistoryRepository;
-    private final ReservationSlotRepository reservationSlotRepository;
+    private final JpaSlotReadRepository reservationSlotRepository;
 
     public ReservationResponse getMyReservationsByDate(String accountId, LocalDate date, LocalTime time) {
 
 
-        Account account = entityFinder.getAccountById(accountId);
+        Account account = entityFinder.getAccountById1(accountId);
         log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
 
         ReservationSlot reservationSlot = reservationSlotRepository.findByDateAndStartTime(date, time)
@@ -55,7 +56,7 @@ public class ReservationQueryService {
     }
 
     public List<ReservationResponse> getAllMyReservation(String accountId) {
-        Account account = entityFinder.getAccountById(accountId);
+        Account account = entityFinder.getAccountById1(accountId);
         log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
 
         List<ReservationHistory> reservationHistory = reservationHistoryRepository.findAllByAccount(account);

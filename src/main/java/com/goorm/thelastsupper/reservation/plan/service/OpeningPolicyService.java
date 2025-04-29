@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 
 /**
  * 예약 슬롯 오픈 정책을 검증하는 컴포넌트입니다.
+ * - 결합: DateRuleSpecOpenSlotImpl, TimeRuleSpecOpenSlotImpl, DayOfWeekRuleSpecOpenSlotImpl
+ * - 응집: 예약 슬롯 오픈 정책 검증
  */
 @Component
 @AllArgsConstructor

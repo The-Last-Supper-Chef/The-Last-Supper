@@ -5,9 +5,8 @@ import java.util.List;
 
 import com.goorm.thelastsupper.account.exception.AccountException;
 import com.goorm.thelastsupper.common.dto.ErrorResponse;
-import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.exception.SlotAlreadyExistsException;
+import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.common.exception.SlotAlreadyExistsException;
 import com.goorm.thelastsupper.restaurant.exception.ApiResponse;
 import com.goorm.thelastsupper.restaurant.exception.RestaurantException;
 import com.goorm.thelastsupper.waiting.exception.WaitingException;
@@ -71,7 +70,8 @@ public class GlobalExceptionHandler {
 		String summaryMessage = e.getMessage();
 
 		List<String> detailList = new ArrayList<>();
-		detailList.add(String.valueOf(e.getErrorCode().getHttpStatus().value()));
+		detailList.add(String.valueOf(e.getErrorCode().getMessage()));
+		detailList.add(String.valueOf(e.getErrorCode()));
 		return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(ApiResponse.error(
 			summaryMessage,
 			detailList,

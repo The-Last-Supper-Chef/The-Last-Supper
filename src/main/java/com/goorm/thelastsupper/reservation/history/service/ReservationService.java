@@ -10,7 +10,9 @@ import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
 import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
 import com.goorm.thelastsupper.reservation.history.repository.ReservationHistoryRepository;
-import com.goorm.thelastsupper.reservation.slot.repository.ReservationTimeSlotRepository;
+import com.goorm.thelastsupper.reservation.slot.repository.JpaSlotReadRepository;
+import com.goorm.thelastsupper.reservation.util.EntityFinder;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +23,16 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.goorm.thelastsupper.reservation.history.entity.ReservationHistory.createReservation;
 import static com.goorm.thelastsupper.reservation.util.ReservationUtil.*;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
 
-    private final ReservationTimeSlotRepository reservationTimeSlotRepository;
+    private final JpaSlotReadRepository slotRepository;
     private final ReservationHistoryRepository reservationHistoryRepository;
+    private final AccountRepository accountRepository;
     private final EntityFinder entityFinder;
 
     @Transactional
@@ -36,14 +41,15 @@ public class ReservationService {
         ReservationSlot reservationSlot = entityFinder.getReservationSlotById(request.slotId());
         log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
 
-        Account account = entityFinder.getAccountById(accountId);
-        log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
+        // Account account = entityFinder.getAccountById(accountId);
+        // log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
 
         log.info("슬롯 오픈 상태 검증 시작...");
         validateSlotIsOpen(reservationSlot);
 
         log.info("중복 예약 여부 검증 시작...");
-        validateNotAlreadyReserved(reservationHistoryRepository, account, reservationSlot);
+        // validateNotAlreadyReserved(reservationHistoryRepository, account, reservationSlot);
+        validateNotAlreadyReserved1(reservationHistoryRepository, accountId, reservationSlot);
 
         log.info("당일 예약 불가 검증 시작...");
         validateNotSameDayReservation(reservationSlot);
@@ -55,11 +61,12 @@ public class ReservationService {
         log.info("잔여 인원 차감 완료. slotId={}, 남은 인원={}", reservationSlot.getId(), reservationSlot.getRemaining());
 
         log.info("예약 등록 시작...");
-        ReservationHistory reservationHistory = createReservation(account,reservationSlot, request.request(), request.totalVisitors());
+        // ReservationHistory reservationHistory = createReservation(account,reservationSlot, request.request(), request.totalVisitors());
+        ReservationHistory reservationHistory = createReservation(entityFinder.getAccountById1(accountId),reservationSlot, request.request(), request.totalVisitors());
 
         try {
             ReservationHistory savedHistory = reservationHistoryRepository.save(reservationHistory);
-            log.info("예약 등록 성공. slotId={}, accountId={}", savedHistory.getId(), account.getId());
+            log.info("예약 등록 성공. slotId={}, accountId={}", savedHistory.getId(), accountId);
             return ReservationResponse.mapFromHistory(savedHistory);
         } catch (Exception e) {
             log.info("예약 저장 실패. slotId={}, accountId={}, error={}", reservationSlot.getId(), accountId, e.getMessage(), e);
@@ -77,8 +84,18 @@ public class ReservationService {
         ReservationHistory reservationHistory = entityFinder.getHistoryById(historyId);
         validateReservationStatus(reservationHistory);
 
+        // log.info("본인 여부 확인 시작...");
+        // validateAccountMatch(reservationHistory.getAccount().getId(), accountId);
+
         log.info("본인 여부 확인 시작...");
-        validateAccountMatch(reservationHistory.getAccount().getId(), accountId);
+        // FIXME: 추가된 로직 (2025-04-29 이수)
+        String savedAccountId = reservationHistoryRepository.findAccountIdByHistoryId(historyId)
+            .orElseThrow(() -> new ReservationException(ReservationErrorCode.RESERVATION_ACCOUNT_NOT_FOUND));
+        log.info("저장된 계정 ID: {}", savedAccountId);
+        if (!savedAccountId.equals(accountId)) {
+            throw new ReservationException(ReservationErrorCode.RESERVATION_ACCOUNT_MISMATCH);
+        }
+
 
         log.info("당일 취소 불가 검증 시작...");
         validateNotSameDayReservation(reservationSlot);
@@ -98,20 +115,20 @@ public class ReservationService {
     @Transactional
     public ReservationResponse modifyReservation(String historyId, String accountId, ReservationRequest request) {
 
-        ReservationHistory reservationHistory = entityFinder.getHistoryById(historyId);
-
-        String historyAccountID = reservationHistory.getAccount().getId();
+       // ReservationHistory reservationHistory = entityFinder.getHistoryById(historyId);
 
         log.info("본인 여부 확인 시작...");
-        validateAccountMatch(reservationHistory.getAccount().getId(), accountId);
+        String optionalAccountId = reservationHistoryRepository.findAccountIdByHistoryId(historyId)
+            .orElseThrow(() -> new ReservationException(ReservationErrorCode.RESERVATION_ACCOUNT_NOT_FOUND));
+        validateAccountMatch(optionalAccountId, accountId);
 
-        cancelReservation(request.slotId(), historyId, historyAccountID);
+        cancelReservation(request.slotId(), historyId, optionalAccountId);
 
         return registerReservation(accountId, request);
     }
 
     public ReservationSlot getReservationSlotById(String slotId){
-        return reservationTimeSlotRepository.findById(slotId)
+        return slotRepository.findById(slotId)
                 .orElseThrow(() -> {
                     log.warn("예약 슬롯을 찾을 수 없습니다. slotId={}", slotId);
                     return new ReservationException(ReservationErrorCode.RESERVATION_SLOT_NOT_FOUND);

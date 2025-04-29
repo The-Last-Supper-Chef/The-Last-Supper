@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 해당 클래스는 응답코드·메시지 세팅을 위한 컨트롤러입니다.
  * 그 외의 로직은 서비스 레이어에서 처리합니다.
- * 결합도: openSlotsUseCase
- */
+ * - 결합: OpenSlotsUseCase
+ * - 응집: 슬롯을 여는 작업만 처리
+ * */
 @Validated
 @RestController
 @RequestMapping("/api/v1/slots")

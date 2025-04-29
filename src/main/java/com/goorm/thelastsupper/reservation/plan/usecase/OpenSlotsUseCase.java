@@ -12,6 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 해당 클래스는 응답코드·메시지 세팅을 위한 유스케이스입니다.
+ * 그 외의 로직은 서비스 레이어에서 처리합니다.
+ * - 결합: OpeningPolicyService, PlanCreatorService, SlotCreatorService
+ * - 응집: 예약 슬롯을 여는 작업만 처리
+ * */
 @Service
 @RequiredArgsConstructor
 public class OpenSlotsUseCase {

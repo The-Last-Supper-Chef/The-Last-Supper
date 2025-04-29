@@ -12,7 +12,7 @@ import com.goorm.thelastsupper.reservation.plan.dto.ReservationPlanResponse;
 import com.goorm.thelastsupper.reservation.plan.entity.ReservationPlan;
 import com.goorm.thelastsupper.reservation.plan.component.PlanReadService;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotDTO;
-import com.goorm.thelastsupper.reservation.slot.service.SlotReadService;
+import com.goorm.thelastsupper.reservation.slot.component.SlotReadService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

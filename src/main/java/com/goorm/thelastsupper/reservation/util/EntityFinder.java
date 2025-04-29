@@ -2,12 +2,13 @@ package com.goorm.thelastsupper.reservation.util;
 
 import com.goorm.thelastsupper.account.entity.Account;
 import com.goorm.thelastsupper.account.repository.AccountRepository;
-import com.goorm.thelastsupper.reservation.entity.ReservationHistory;
-import com.goorm.thelastsupper.reservation.entity.ReservationSlot;
-import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.repository.ReservationHistoryRepository;
-import com.goorm.thelastsupper.reservation.repository.ReservationSlotRepository;
+import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
+import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.history.entity.ReservationHistory;
+import com.goorm.thelastsupper.reservation.history.repository.ReservationHistoryRepository;
+import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
+import com.goorm.thelastsupper.reservation.slot.repository.JpaSlotReadRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EntityFinder {
 
-    private final ReservationSlotRepository reservationSlotRepository;
+    private final JpaSlotReadRepository reservationSlotRepository;
     private final ReservationHistoryRepository reservationHistoryRepository;
     private final AccountRepository accountRepository;
 
@@ -35,6 +36,10 @@ public class EntityFinder {
                     log.warn("계정을 찾을 수 없습니다. accountId={}", accountId);
                     return new ReservationException(ReservationErrorCode.RESERVATION_NOT_FOUND);
                 });
+    }
+
+    public Account getAccountById1(String accountId){
+        return accountRepository.getReferenceById(accountId);
     }
 
     public ReservationHistory getHistoryById(String historyId){

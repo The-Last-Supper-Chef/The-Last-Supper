@@ -33,6 +33,17 @@ public class ReservationUtil {
         log.info("중복 예약 없음: accountId={}, slotId={}", account.getId(), reservationSlot.getId());
     }
 
+    public static void validateNotAlreadyReserved1(ReservationHistoryRepository reservationHistoryRepository, String accountId, ReservationSlot reservationSlot) {
+        reservationHistoryRepository.findByAccountIdAndReservationSlot(accountId, reservationSlot)
+            .filter(history -> history.getReservedStatus() == ReservedStatus.CONFIRMED)
+            .ifPresent(history -> {
+                log.warn("이미 확정된 예약 존재: accountId={}, slotId={}", accountId, reservationSlot.getId());
+                throw new ReservationException(ReservationErrorCode.RESERVATION_DUPLICATE_RESERVATION);
+            });
+
+        log.info("중복 예약 없음: accountId={}, slotId={}", accountId, reservationSlot.getId());
+    }
+
     public static void validateNotSameDayReservation(ReservationSlot reservationSlot) {
         if (LocalDate.now().isAfter(reservationSlot.getDate().minusDays(1))) {
             log.warn("당일 예약, 취소 불가 조건 위반: 오늘={}, 예약일={}", LocalDate.now(), reservationSlot.getDate());
