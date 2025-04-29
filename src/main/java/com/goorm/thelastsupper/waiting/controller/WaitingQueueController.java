@@ -23,5 +23,5 @@ public class WaitingQueueController {
     @GetMapping("/queue")
     public List<WaitingResponse> getWaitingList() {
         return waitingQueueService.getWaitingList();
-    }ㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂ
+    }
 }
