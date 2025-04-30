@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.goorm.thelastsupper.account.dto.TokenDTO;
 import com.goorm.thelastsupper.account.entity.Account;
 
 import io.jsonwebtoken.Claims;
@@ -66,6 +67,10 @@ public class TokenProvider {
 			.build()
 			.parseClaimsJws(token)
 			.getBody();
+	}
+
+	public String getAccountId(String token) {
+		return getTokenClaims(token).getSubject();
 	}
 
 	public Authentication getAuthentication(String token) {

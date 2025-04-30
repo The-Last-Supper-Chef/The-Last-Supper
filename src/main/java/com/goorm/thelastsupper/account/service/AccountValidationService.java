@@ -22,6 +22,10 @@ public class AccountValidationService {
 	private final AccountRepository accountRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	public Account findById(String id) {
+		return accountRepository.findById(id).orElseThrow(AccountException.AccountNotFoundException::new);
+	}
+
 	public void existAccount(String email){
 		if (accountRepository.existsByEmail(email)) {
 			throw new AccountException.AccountDuplicationException();

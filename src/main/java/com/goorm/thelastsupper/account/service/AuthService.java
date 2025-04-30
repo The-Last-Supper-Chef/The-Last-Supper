@@ -12,6 +12,7 @@ import com.goorm.thelastsupper.account.entity.Account;
 import com.goorm.thelastsupper.common.security.JWTToken;
 import com.goorm.thelastsupper.common.security.JWTTokenRepository;
 import com.goorm.thelastsupper.common.security.TokenProvider;
+import com.goorm.thelastsupper.common.security.exception.AuthException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,11 @@ public class AuthService {
 		return new LoginResponse(saveToken(account), AccountResponse.toAccountResponse(account));
 	}
 
+	public TokenDTO refresh(String access, String refresh){
+		validRefreshToken(access,refresh);
+		return saveToken(accountValidationService.findById(tokenProvider.getAccountId(refresh)));
+	}
+
 	private TokenDTO saveToken(Account account){
 		JWTToken refreshToken = makeToken(account);
 		jwtTokenRepository.save(refreshToken);
@@ -45,6 +51,14 @@ public class AuthService {
 
 	private JWTToken makeToken(Account account){
 		return new JWTToken(tokenProvider.createRefreshToken(account.getId()), tokenProvider.createAccessToken(account));
+	}
+
+	private void validRefreshToken(String access, String refresh){
+		JWTToken token = jwtTokenRepository.findById(refresh).orElseThrow(AuthException.RefreshTokenNotFoundException::new);
+		if(!token.getAccessToken().equals(access)) {
+			throw new AuthException.RefreshTokenInvalidException();
+		}
+		jwtTokenRepository.delete(token);
 	}
 
 }

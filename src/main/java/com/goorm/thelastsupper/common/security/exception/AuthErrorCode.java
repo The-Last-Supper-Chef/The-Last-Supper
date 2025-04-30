@@ -14,7 +14,11 @@ public enum AuthErrorCode {
 	TOKEN_PARSING_FAILED(HttpStatus.UNAUTHORIZED, "토큰 파싱에 실패했습니다."),
 	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
 	TOKEN_UNSUPPORTED(HttpStatus.UNAUTHORIZED, "지원하지 않는 토큰 형식입니다."),
-	INVALID_CLAIM_VALUE(HttpStatus.BAD_REQUEST, "토큰 내 권한 정보가 올바르지 않습니다.");
+	INVALID_CLAIM_VALUE(HttpStatus.BAD_REQUEST, "토큰 내 권한 정보가 올바르지 않습니다."),
+
+	REFRESH_TOKEN_MISSING(HttpStatus.BAD_REQUEST,     "리프레시 토큰이 없습니다."),
+	REFRESH_NOT_FOUND(HttpStatus.NOT_FOUND,     "리프레시 토큰이 없습니다."),
+	REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED,    "유효하지 않은 리프레시 토큰입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
