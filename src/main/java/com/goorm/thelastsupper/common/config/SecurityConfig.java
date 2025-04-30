@@ -24,10 +24,10 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement(sm ->
 				sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//			.authorizeHttpRequests(auth -> auth
-//				.requestMatchers("/api/v1/signup", "/api/v1/login","/api/v1/**").permitAll() //임시
-//				.anyRequest().authenticated()
-//			);
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/api/v1/signup", "/api/v1/login","/api/v1/**").permitAll() //임시
+				.anyRequest().authenticated()
+			);
 		return http.build();
 	}
 }
