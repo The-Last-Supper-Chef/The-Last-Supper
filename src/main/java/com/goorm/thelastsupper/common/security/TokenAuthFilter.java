@@ -30,7 +30,10 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 	private final List<String> notJwtPaths = List.of(
 		"/api/v1/signup",
 		"/api/v1/login",
-		"/api/refresh"
+		"/api/refresh",
+		"/actuator",
+		"/metrics",
+		"/prometheus"
 	);
 
 	@Override
@@ -38,7 +41,13 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 		String uri = request.getRequestURI();
 
-		if (!notJwtPaths.contains(uri)) {
+		String userAgent = request.getHeader("User-Agent");
+		if (userAgent != null && userAgent.contains("Apache-HttpClient")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		if (notJwtPaths.stream().noneMatch(uri::startsWith)) {
 			try {
 				String token = HeaderUtil.getAccessToken(request);
 				Authentication auth = tokenProvider.getAuthentication(token);
