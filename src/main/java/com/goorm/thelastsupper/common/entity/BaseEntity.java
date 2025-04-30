@@ -2,7 +2,10 @@ package com.goorm.thelastsupper.common.entity;
 
 import com.github.f4b6a3.ulid.UlidCreator;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     @Id
+    @Setter(AccessLevel.PROTECTED)
     private String id;
 
     @CreatedDate
@@ -40,5 +44,10 @@ public class BaseEntity {
         if (this.id == null) {
             this.id = UlidCreator.getMonotonicUlid().toString();
         }
+    }
+
+    /** 테스트·팩터리용 id 주입 (protected) */
+    public void setId(String id) {
+        this.id = id;
     }
 }
