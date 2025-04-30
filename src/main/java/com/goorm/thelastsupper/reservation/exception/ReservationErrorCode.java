@@ -28,8 +28,8 @@ public enum ReservationErrorCode {
     RESERVATION_TIME_EXPIRED(HttpStatus.UNPROCESSABLE_ENTITY, "예약 가능 시간이 만료되었습니다."),
     RESERVATION_CAPACITY_OVER(HttpStatus.UNPROCESSABLE_ENTITY, "예약 가능 인원을 초과했습니다."),
     RESERVATION_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Repository save 실패" ),
-    RESERVATION_ID_MISMATCH(HttpStatus.BAD_REQUEST, "요청한 예약 ID와 일치하지 않습니다.");
-
+    RESERVATION_ID_MISMATCH(HttpStatus.BAD_REQUEST, "요청한 예약 ID와 일치하지 않습니다."),
+	RESERVATION_PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 플랜이 존재하지 않습니다.");
     private final HttpStatus httpStatus;
     private final String message;
 }
