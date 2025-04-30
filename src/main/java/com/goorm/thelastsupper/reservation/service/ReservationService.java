@@ -1,7 +1,7 @@
 package com.goorm.thelastsupper.reservation.service;
 
 import com.goorm.thelastsupper.account.entity.Account;
-import com.goorm.thelastsupper.account.repository.AccountRepository;
+import com.goorm.thelastsupper.notofication.service.NotificationService;
 import com.goorm.thelastsupper.reservation.dto.ReservationRequest;
 import com.goorm.thelastsupper.reservation.dto.ReservationResponse;
 import com.goorm.thelastsupper.reservation.entity.ReservationHistory;
@@ -10,7 +10,6 @@ import com.goorm.thelastsupper.reservation.entity.SlotStatus;
 import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.exception.ReservationException;
 import com.goorm.thelastsupper.reservation.repository.ReservationHistoryRepository;
-import com.goorm.thelastsupper.reservation.repository.ReservationSlotRepository;
 import com.goorm.thelastsupper.reservation.util.EntityFinder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,7 @@ public class ReservationService {
 
     private final ReservationHistoryRepository reservationHistoryRepository;
     private final EntityFinder entityFinder;
+    private final NotificationService notificationService;
 
     @Transactional
     public ReservationResponse registerReservation(String accountId, @Valid ReservationRequest request) {
@@ -60,6 +60,8 @@ public class ReservationService {
         try {
             ReservationHistory savedHistory = reservationHistoryRepository.save(reservationHistory);
             log.info("예약 등록 성공. reservationId={}, accountId={}", savedHistory.getId(), account.getId());
+            log.info("알림 발송 시작...");
+            notificationService.sendRegisterReservationNotification(account,reservationSlot,reservationHistory);
             return ReservationResponse.mapFromHistory(savedHistory);
         } catch (Exception e) {
             log.info("예약 저장 실패. slotId={}, accountId={}, error={}", reservationSlot.getId(), accountId, e.getMessage(), e);
