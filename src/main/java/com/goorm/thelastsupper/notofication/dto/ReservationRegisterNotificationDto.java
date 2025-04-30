@@ -3,8 +3,8 @@ package com.goorm.thelastsupper.notofication.dto;
 import com.goorm.thelastsupper.account.entity.Account;
 import com.goorm.thelastsupper.notofication.entity.NotificationCategory;
 import com.goorm.thelastsupper.notofication.entity.NotificationEventType;
-import com.goorm.thelastsupper.reservation.entity.ReservationHistory;
-import com.goorm.thelastsupper.reservation.entity.ReservationSlot;
+import com.goorm.thelastsupper.reservation.history.entity.ReservationHistory;
+import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
 import com.goorm.thelastsupper.restaurant.entity.Restaurant;
 
 import java.time.LocalDate;

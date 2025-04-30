@@ -8,8 +8,6 @@ import org.springframework.validation.FieldError;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.goorm.thelastsupper.reservation.dto.OpenSlotsResponse;
-
 @Getter
 public class ApiResponse<T> {
 	private final ResultType result;        // 성공/실패 여부
@@ -18,7 +16,7 @@ public class ApiResponse<T> {
 	private final List<String> errorDetail; // 실패 시 상세 에러 메시지 목록
 	private final T data;                   // 성공 시 반환할 데이터
 
-	private ApiResponse(ResultType result, int httpStatus, String message, List<String> errorDetail, T data) {
+	public ApiResponse(ResultType result, int httpStatus, String message, List<String> errorDetail, T data) {
 		this.result = result;
 		this.httpStatus = httpStatus;
 		this.message = message;
@@ -29,8 +27,11 @@ public class ApiResponse<T> {
 	/**
 	 * 에러 응답 (요약 메시지와 상세 메시지 모두 전달)
 	 */
-	public static <T> ApiResponse<T> error(String errorMessage, List<String> errorDetail, int httpStatus) {
-		return new ApiResponse<>(ResultType.ERROR, httpStatus, errorMessage, errorDetail, null);
+	/** 커스텀 메시지 + 상세 리스트 직접 전달 */
+	public static <T> ApiResponse<T> error(String summary,
+		List<String> detail,
+		HttpStatus status) {
+		return new ApiResponse<>(ResultType.ERROR, status.value(), summary, detail, null);
 	}
 
 	/**
@@ -72,13 +73,15 @@ public class ApiResponse<T> {
 		return errorList;
 	}
 
-	public static ApiResponse<OpenSlotsResponse> success(OpenSlotsResponse execute, String s) {
+	public static <T> ApiResponse<T> success(T data, String message) {
 		return new ApiResponse<>(
 			ResultType.SUCCESS,
 			HttpStatus.OK.value(),
-			s,
+			message,
 			null,
-			execute
+			data
 		);
 	}
+
+
 }

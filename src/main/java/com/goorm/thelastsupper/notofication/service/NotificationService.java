@@ -3,12 +3,13 @@ package com.goorm.thelastsupper.notofication.service;
 import com.goorm.thelastsupper.account.entity.Account;
 import com.goorm.thelastsupper.notofication.entity.NotificationEventType;
 import com.goorm.thelastsupper.notofication.listener.StompEventListener;
-import com.goorm.thelastsupper.reservation.entity.ReservationHistory;
-import com.goorm.thelastsupper.reservation.entity.ReservationPlan;
-import com.goorm.thelastsupper.reservation.entity.ReservationSlot;
-import com.goorm.thelastsupper.reservation.exception.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.repository.ReservationPlanRepository;
+import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
+import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.history.entity.ReservationHistory;
+import com.goorm.thelastsupper.reservation.plan.entity.ReservationPlan;
+import com.goorm.thelastsupper.reservation.plan.repository.JpaPlanReadRepository;
+import com.goorm.thelastsupper.reservation.plan.repository.PlanReadRepository;
+import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
 import com.goorm.thelastsupper.restaurant.entity.Restaurant;
 import com.goorm.thelastsupper.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,8 @@ public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final StompEventListener stompEventListener;
-    private final ReservationPlanRepository reservationPlanRepository;
     private final RestaurantRepository restaurantRepository;
+    private final JpaPlanReadRepository reservationPlanRepository;
     private final String DESTINATION_SUBSCRIBE_URL = "/queue/notifications";
 
     public void sendRegisterReservationNotification(Account account, ReservationSlot reservationSlot, ReservationHistory reservationHistory) {
