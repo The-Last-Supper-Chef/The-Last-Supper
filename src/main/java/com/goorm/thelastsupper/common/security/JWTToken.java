@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@RedisHash(value = "mimoToken", timeToLive = 14*24*60*60) //1,209,600
+@RedisHash(value = "jwtToken", timeToLive = 14*24*60*60)
 @Getter
 @Setter
 @NoArgsConstructor

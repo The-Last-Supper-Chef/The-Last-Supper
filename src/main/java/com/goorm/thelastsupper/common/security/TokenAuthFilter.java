@@ -11,7 +11,6 @@ import com.goorm.thelastsupper.common.security.exception.AuthException;
 import com.goorm.thelastsupper.common.util.HeaderUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;

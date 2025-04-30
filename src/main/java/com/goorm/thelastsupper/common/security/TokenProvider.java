@@ -1,8 +1,6 @@
 package com.goorm.thelastsupper.common.security;
 
 import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -14,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.goorm.thelastsupper.account.dto.TokenDTO;
 import com.goorm.thelastsupper.account.entity.Account;
 
 import io.jsonwebtoken.Claims;
