@@ -33,7 +33,7 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.sessionManagement(sm ->
-				sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/v1/signup", "/api/v1/login","/api/v1/**").permitAll() //임시
 				.anyRequest().authenticated()
