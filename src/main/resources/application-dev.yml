@@ -9,16 +9,6 @@ spring:
     password: ${DB_PASSWORD:}
     driver-class-name: ${DB_DRIVER:org.h2.Driver}
 
-    hikari:
-      maximum-pool-size: 20              # 최대 20개의 커넥션을 사용 (DB max_connections 고려)
-      minimum-idle: 10                    # 최소 10개의 유휴 커넥션을 유지하여 필요시 빠른 대응
-      connection-timeout: 60000          # 60초 내에 커넥션을 획득하지 못하면 예외 발생
-      idle-timeout: 300000               # 유휴 커넥션은 최대 5분까지 유지
-      max-lifetime: 1800000              # 각 커넥션의 최대 수명을 30분으로 제한
-      initialization-fail-timeout: 30000 # 초기 커넥션 생성에 실패하면 30초 동안 재시도
-      leak-detection-threshold: 60000    # 60초 이상 사용된 커넥션에 대해 누수 경고 로깅 (문제 진단에 도움)
-      # connection-test-query: SELECT 1  # JDBC4 이상에서는 불필요하나, 필요시 활성 커넥션 검증을 위해 사용
-
   sql:
     init:
       mode: ${SQL_INIT_MODE:never}
