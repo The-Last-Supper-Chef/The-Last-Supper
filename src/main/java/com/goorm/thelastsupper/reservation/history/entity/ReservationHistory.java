@@ -17,6 +17,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+@Getter // FIXME: 현재 예약 알림 도메인에서 사용되고 있음.
 @Slf4j
 @Entity
 @Table(name = "reservation_history")

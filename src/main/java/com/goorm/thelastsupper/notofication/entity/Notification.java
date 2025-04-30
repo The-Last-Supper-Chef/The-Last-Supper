@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
 public class Notification extends BaseEntity {
 
     private String accountId;

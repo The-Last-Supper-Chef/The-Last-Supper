@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
+import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
 import com.goorm.thelastsupper.reservation.slot.component.SlotReadService;
 import com.goorm.thelastsupper.reservation.slot.component.SlotWriteService;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotResponse;
@@ -39,15 +40,19 @@ public class SlotUpdateService {
 		// 1) Repository 접근 대신 읽기 컴포넌트를 통해 슬롯 조회
 		ReservationSlot slot = slotReadService.checkSlotExistence(req.slotId());
 
-		// 2) 엔티티에 필드 반영
+		// 2) capacityTotal 변경 전 검증 (엔티티 메서드로 이동)
+		slot.ensureCapacityNotLessThanReserved(req.capacityTotal());
+
+		// 4) 엔티티에 필드 반영
 		slot.updateCapacityAndStatus(
 			req.capacityTotal(),
-			req.remaining(),
 			req.status()
 		);
 
-		// 3) 저장
+		// 5) 저장
 		slotWriteService.save(slot);
 		return slot;
 	}
 }
+
+

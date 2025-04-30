@@ -16,6 +16,8 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+// TODO: 중복 로직 분리 및 리팩토링 필요
+@Getter     // FIXME: 현재 예약 알림 도메인에서 사용되고 있음.
 @Slf4j
 @Entity
 @Table(name = "reservation_slot")
@@ -67,25 +69,41 @@ public class ReservationSlot extends BaseEntity {
 
     public void setHold() {
         this.status = SlotStatus.HOLD;
+        this.capacityTotal = this.remaining;
     }
+
     public void setOpen() {
         this.status = SlotStatus.OPEN;
     }
     public void setBlock() {
-        this.status = SlotStatus.BLOCK;
+        if (calculateReservedCount() > 0) {
+            throw new ReservationException(
+                ReservationErrorCode.SLOT_BLOCK_WITH_EXISTING_RESERVATIONS,
+                "예약이 존재하는 슬롯은 BLOCK 상태로 변경할 수 없습니다."
+            );
+        }
+        else {
+            this.status = SlotStatus.BLOCK;
+            capacityTotal = 0;
+            remaining = 0;
+        }
     }
 
     /**
      * 이 슬롯의 수용 인원, 남은 인원, 상태를 한 번에 갱신합니다.
      *
      * @param capacityTotal 새로 설정할 총 수용 인원
-     * @param remaining     새로 설정할 남은 예약 가능 인원
      * @param status        새로 설정할 슬롯 상태
      */
-    public void updateCapacityAndStatus(int capacityTotal, int remaining, SlotStatus status) {
+    public void updateCapacityAndStatus(int capacityTotal, SlotStatus status) {
         this.capacityTotal = capacityTotal;
-        this.remaining     = remaining;
-        this.status        = status;
+        if(status == SlotStatus.BLOCK) {
+            setBlock();
+        } else if(status == SlotStatus.HOLD) {
+            setHold();
+        } else if(status == SlotStatus.OPEN) {
+            setOpen();
+        }
     }
 
 
@@ -117,17 +135,6 @@ public class ReservationSlot extends BaseEntity {
             this.remaining,
             this.status
         );
-    }
-
-
-    /** 열려있지 않은 상태인지 */
-    public boolean isNotOpen() {
-        return this.status.isNotOpen();
-    }
-
-    /** 이 슬롯이 아직 예약 가능한지? (OPEN 상태이고 남은 인원이 충분할 때) */
-    public boolean isBookable(int requested) {
-        return this.status == SlotStatus.OPEN && this.remaining >= requested;
     }
 
     /** 이 슬롯이 오픈 상태가 아니라면 예외를 던진다. */
@@ -184,6 +191,26 @@ public class ReservationSlot extends BaseEntity {
         // 3) 로그
         log.info("잔여 인원 증가 완료. slotId={}, 남은 인원={}, slot 상태={}",
             this.getId(), this.remaining, this.status);
+    }
+
+    /** 남은 예약된 인원 수를 계산 */
+    public int calculateReservedCount() {
+        return this.capacityTotal - this.remaining;
+    }
+
+    /**
+     * 새로운 총 수용 인원이, 이미 확정된 예약 인원(reservedCount)보다 적게 설정되는지 검증합니다.
+     * @param newCapacity 변경하고자 하는 총 수용 인원
+     * @throws ReservationException 잘못된 수용 인원 설정 시
+     */
+    public void ensureCapacityNotLessThanReserved(int newCapacity) {
+        int reservedCount = this.capacityTotal - this.remaining;
+        if (newCapacity < reservedCount) {
+            throw new ReservationException(
+                ReservationErrorCode.SLOT_UPDATE_INVALID_CAPACITY,
+                "이미 예약된 인원(" + reservedCount + ")보다 수용 인원을 작게 설정할 수 없습니다."
+            );
+        }
     }
 
 }

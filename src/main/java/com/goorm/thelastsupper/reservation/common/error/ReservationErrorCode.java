@@ -1,4 +1,4 @@
-package com.goorm.thelastsupper.reservation.exception;
+package com.goorm.thelastsupper.reservation.common.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,9 @@ public enum ReservationErrorCode {
     RESERVATION_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Repository save 실패" ),
     RESERVATION_ID_MISMATCH(HttpStatus.BAD_REQUEST, "요청한 예약 ID와 일치하지 않습니다."),
 	SLOT_ALREADY_CLOSED(HttpStatus.BAD_REQUEST, "해당 슬롯은 이미 닫혔습니다."),
-	SLOT_STATUS_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 슬롯 상태는 존재하지 않습니다.");
+	SLOT_STATUS_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 슬롯 상태는 존재하지 않습니다."),
+	SLOT_UPDATE_INVALID_CAPACITY(HttpStatus.BAD_REQUEST, "슬롯의 수용 인원은 예약된 인원보다 작을 수 없습니다."),
+	SLOT_BLOCK_WITH_EXISTING_RESERVATIONS(HttpStatus.BAD_REQUEST, "예약이 존재하는 슬롯은 BLOCK 상태로 변경할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

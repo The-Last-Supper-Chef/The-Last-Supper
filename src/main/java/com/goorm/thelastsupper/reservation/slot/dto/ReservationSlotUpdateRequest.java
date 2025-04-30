@@ -13,9 +13,6 @@ public record ReservationSlotUpdateRequest(
 	@Min(value = 1, message = "총 수용 인원(capacityTotal)은 1 이상이어야 합니다.")
 	int capacityTotal,
 
-	@Min(value = 0, message = "remaining은 0 이상이어야 합니다.")
-	int remaining,
-
 	@NotNull
 	SlotStatus status
 ) {}
