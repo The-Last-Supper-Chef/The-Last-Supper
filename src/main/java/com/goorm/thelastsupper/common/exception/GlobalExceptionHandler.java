@@ -9,7 +9,6 @@ import com.goorm.thelastsupper.reservation.common.exception.ReservationException
 import com.goorm.thelastsupper.reservation.common.exception.SlotAlreadyExistsException;
 import com.goorm.thelastsupper.restaurant.exception.ApiResponse;
 import com.goorm.thelastsupper.common.security.exception.AuthException;
-import com.goorm.thelastsupper.reservation.exception.ReservationException;
 import com.goorm.thelastsupper.restaurant.exception.RestaurantException;
 import com.goorm.thelastsupper.waiting.exception.WaitingException;
 import org.springframework.http.HttpStatus;
@@ -146,11 +145,6 @@ public class GlobalExceptionHandler {
 		);
 		return ResponseEntity.status(ErrorCode.INVALID_INPUT_PARAMETER.getHttpStatus()).body(errorResponse);
 	}
-    @ExceptionHandler(ReservationException.class)
-    public ResponseEntity<ErrorResponse> ReservationHandler(ReservationException ex) {
-        ErrorResponse response = new ErrorResponse(ex.getErrorCode().name(), ex.getErrorCode().getMessage());
-        return new ResponseEntity<>(response, ex.getErrorCode().getHttpStatus());
-    }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> MethodNotSupportedHandler(HttpRequestMethodNotSupportedException ex) {
