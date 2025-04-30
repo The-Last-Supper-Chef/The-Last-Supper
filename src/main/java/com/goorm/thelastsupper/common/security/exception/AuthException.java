@@ -51,4 +51,16 @@ public class AuthException extends RuntimeException {
 		}
 	}
 
+	public static class RefreshTokenMissingException  extends AuthException {
+		public RefreshTokenMissingException()  { super(AuthErrorCode.REFRESH_TOKEN_MISSING); }
+	}
+
+	public static class RefreshTokenNotFoundException  extends AuthException {
+		public RefreshTokenNotFoundException()  { super(AuthErrorCode.REFRESH_NOT_FOUND); }
+	}
+
+	public static class RefreshTokenInvalidException  extends AuthException {
+		public RefreshTokenInvalidException()  { super(AuthErrorCode.REFRESH_TOKEN_INVALID); }
+	}
+
 }

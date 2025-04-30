@@ -52,7 +52,6 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 				String token = HeaderUtil.getAccessToken(request);
 				Authentication auth = tokenProvider.getAuthentication(token);
 				SecurityContextHolder.getContext().setAuthentication(auth);
-				log.info("인증 성공: {}", auth.getName());
 			} catch (ExpiredJwtException e) {
 				throw new AuthException.TokenExpiredException();
 			} catch (UnsupportedJwtException e) {
