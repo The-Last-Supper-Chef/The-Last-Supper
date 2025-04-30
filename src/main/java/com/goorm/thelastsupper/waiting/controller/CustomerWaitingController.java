@@ -1,5 +1,6 @@
 package com.goorm.thelastsupper.waiting.controller;
 
+import com.goorm.thelastsupper.waiting.dto.WaitingPositionResponse;
 import com.goorm.thelastsupper.waiting.dto.WaitingRequest;
 import com.goorm.thelastsupper.waiting.dto.WaitingResponse;
 import com.goorm.thelastsupper.waiting.service.CustomerWaitingService;
@@ -22,5 +23,26 @@ public class CustomerWaitingController {
         WaitingResponse waitingResponse = customerWaitingService.createWaiting(accountId, request.headCount());
 
         return ResponseEntity.ok(waitingResponse);
+    }
+
+
+    @PostMapping("/cancel")
+    public ResponseEntity<WaitingResponse> cancelWaiting(@RequestParam String accountId) {
+        WaitingResponse waitingResponse = customerWaitingService.cancelWaiting(accountId);
+
+        return ResponseEntity.ok(waitingResponse);
+    }
+
+    @PostMapping("/delay")
+    public ResponseEntity<WaitingResponse> delayWaiting(@RequestParam String accountId) {
+        WaitingResponse waitingResponse = customerWaitingService.delayWaiting(accountId);
+
+        return ResponseEntity.ok(waitingResponse);
+    }
+
+    @GetMapping("/position")
+    public ResponseEntity<WaitingPositionResponse> getWaitingPosition(@RequestParam String accountId) {
+        WaitingPositionResponse waitingPositionResponse = customerWaitingService.getWaitingPosition(accountId);
+        return ResponseEntity.ok(waitingPositionResponse);
     }
 }

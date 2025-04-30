@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 public class WaitingSetting extends BaseEntity {
-    // 웨이팅 세팅: 오픈, 차단, 마감
+    // 웨이팅 세팅: 열림, 중단, 종료
     @Enumerated(EnumType.STRING)
     private WaitingSetCategory waitingSetCategory;
 
@@ -27,4 +27,5 @@ public class WaitingSetting extends BaseEntity {
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     private Restaurant restaurant;
+
 }

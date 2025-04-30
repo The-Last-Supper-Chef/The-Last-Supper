@@ -33,6 +33,17 @@ spring:
 
   jwt:
     secret: ${SECRET_KEY}
+    access-token-expire: 1000000000000
+    refresh-token-expire: 10000000000000
 
   config:
     import: optional:file:.env[.properties]
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    tags:
+      application: the-last-supper

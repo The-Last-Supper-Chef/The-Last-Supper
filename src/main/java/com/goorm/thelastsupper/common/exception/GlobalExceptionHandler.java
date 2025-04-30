@@ -8,12 +8,15 @@ import com.goorm.thelastsupper.common.dto.ErrorResponse;
 import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
 import com.goorm.thelastsupper.reservation.common.exception.SlotAlreadyExistsException;
 import com.goorm.thelastsupper.restaurant.exception.ApiResponse;
+import com.goorm.thelastsupper.common.security.exception.AuthException;
+import com.goorm.thelastsupper.reservation.exception.ReservationException;
 import com.goorm.thelastsupper.restaurant.exception.RestaurantException;
 import com.goorm.thelastsupper.waiting.exception.WaitingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -30,6 +33,7 @@ public class GlobalExceptionHandler {
         FieldError fieldError = ex.getBindingResult().getFieldError();
 
         String message = fieldError != null ? fieldError.getDefaultMessage() : "검증 오류입니다.";
+		log.info("입력 오류 필드 - {}, 입력값 : {}", fieldError.getField(), fieldError.getRejectedValue());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ErrorCode.INVALID_INPUT_PARAMETER.name(), message));
@@ -142,4 +146,31 @@ public class GlobalExceptionHandler {
 		);
 		return ResponseEntity.status(ErrorCode.INVALID_INPUT_PARAMETER.getHttpStatus()).body(errorResponse);
 	}
+    @ExceptionHandler(ReservationException.class)
+    public ResponseEntity<ErrorResponse> ReservationHandler(ReservationException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getErrorCode().name(), ex.getErrorCode().getMessage());
+        return new ResponseEntity<>(response, ex.getErrorCode().getHttpStatus());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> MethodNotSupportedHandler(HttpRequestMethodNotSupportedException ex) {
+        ErrorCode errorCode = ErrorCode.METHOD_NOT_ALLOWED;
+        ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
+        log.info("잘못된 HTTP 메서드 - {}", ex.getMethod());
+        return new ResponseEntity<>(response, errorCode.getHttpStatus());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
+        ErrorCode errorCode = ErrorCode.INVALID_SERVER_ERROR;
+        ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
+        log.error("유틸리티 클래스 인스턴스화 오류", ex);
+        return new ResponseEntity<>(response, errorCode.getHttpStatus());
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> AuthExceptionHandler(AuthException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getErrorCode().name(), ex.getErrorCode().getMessage());
+        return new ResponseEntity<>(response, ex.getErrorCode().getHttpStatus());
+    }
 }

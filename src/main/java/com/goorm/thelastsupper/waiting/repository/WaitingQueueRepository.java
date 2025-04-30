@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,16 @@ public interface WaitingQueueRepository extends JpaRepository<WaitingQueue,Strin
 
     @Query("SELECT MAX(wq.number) FROM WaitingQueue wq")
     Long findMaxNumber();
+
+    Optional<WaitingQueue> findByAccountAndWaitingStatus(Account account, WaitingStatus waitingStatus);
+
+    List<WaitingQueue> findAllByWaitingStatus(WaitingStatus waitingStatus);
+
+    // 특정 계정의 현재 대기행 조회
+    Optional<WaitingQueue> findByAccount_IdAndWaitingStatus(String accountId, WaitingStatus status);
+
+    // 번호(number)가 주어진 값보다 작은 대기중 행 개수(순위 계산용)
+    int countByWaitingStatusAndNumberLessThan(WaitingStatus status, Long number);
+
+    Optional<WaitingQueue> findFirstByWaitingStatusOrderByCreatedAtAsc(WaitingStatus waitingStatus);
 }

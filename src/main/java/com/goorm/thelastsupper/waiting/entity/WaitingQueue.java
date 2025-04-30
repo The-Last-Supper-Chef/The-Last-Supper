@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
+@Setter
 @Table(name = "waiting_queue")
 @NoArgsConstructor
 @AllArgsConstructor
