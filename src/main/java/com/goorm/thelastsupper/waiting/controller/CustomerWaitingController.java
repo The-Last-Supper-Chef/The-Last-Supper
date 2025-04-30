@@ -20,7 +20,6 @@ public class CustomerWaitingController {
     @PostMapping
     public ResponseEntity<WaitingResponse> createWaiting(@RequestParam String accountId,
                                                          @Valid @RequestBody WaitingRequest request) {
-        log.info("요청받은 accountId = {}", accountId); // 👉 이거 추가직
         WaitingResponse waitingResponse = customerWaitingService.createWaiting(accountId, request.headCount());
 
         return ResponseEntity.ok(waitingResponse);
