@@ -1,4 +1,4 @@
-package com.goorm.thelastsupper.reservation.common.error;
+package com.goorm.thelastsupper.reservation.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
