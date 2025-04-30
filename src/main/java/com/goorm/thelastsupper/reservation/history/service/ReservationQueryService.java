@@ -30,7 +30,6 @@ public class ReservationQueryService {
 
     public ReservationResponse getMyReservationsByDate(String accountId, LocalDate date, LocalTime time) {
 
-
         Account account = entityFinder.getAccountById1(accountId);
         log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
 
@@ -45,9 +44,10 @@ public class ReservationQueryService {
         log.info("예약 히스토리 수 조회: count={}", reservationHistories.size());
 
         for (ReservationHistory reservationHistory : reservationHistories) {
-            if(reservationHistory.getReservedStatus().equals(ReservedStatus.CONFIRMED)){
-                log.info("확정된 예약 발견: reservationHistoryId={}, status={}", reservationHistory.getId(), reservationHistory.getReservedStatus());
-                return ReservationResponse.mapFromHistory(reservationHistory);
+            if(reservationHistory.isConfirmed()) {
+                // log.info("확정된 예약 발견: reservationHistoryId={}, status={}", reservationHistory.getId(), reservationHistory.getReservedStatus());
+                log.info("확정된 예약 발견: reservationHistoryId={}", reservationHistory.getId());
+                return reservationHistory.toResponse();
             }
         }
 
@@ -62,7 +62,7 @@ public class ReservationQueryService {
         List<ReservationHistory> reservationHistory = reservationHistoryRepository.findAllByAccount(account);
 
         return reservationHistory.stream()
-                .map(ReservationResponse::mapFromHistory)
+                .map(ReservationHistory::toResponse)
                 .toList();
     }
 }

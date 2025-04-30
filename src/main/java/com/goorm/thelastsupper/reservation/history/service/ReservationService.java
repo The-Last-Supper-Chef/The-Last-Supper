@@ -39,8 +39,10 @@ public class ReservationService {
     public ReservationResponse registerReservation(String accountId, @Valid ReservationRequest request) {
 
         ReservationSlot reservationSlot = entityFinder.getReservationSlotById(request.slotId());
-        log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
+        // log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
+        log.info("예약 슬롯 조회 성공: slotId={}", reservationSlot.getId());
 
+        // FIXME: 타 도메인에서 조회하는 로직은 타 서비스로 분리하는 것이 좋을 것 같습니다.
         // Account account = entityFinder.getAccountById(accountId);
         // log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
 
@@ -58,7 +60,8 @@ public class ReservationService {
         validateAndUpdateCapacity(reservationSlot, request.totalVisitors());
 
         reservationSlot.decreaseRemaining(request.totalVisitors());
-        log.info("잔여 인원 차감 완료. slotId={}, 남은 인원={}", reservationSlot.getId(), reservationSlot.getRemaining());
+        // log.info("잔여 인원 차감 완료. slotId={}, 남은 인원={}", reservationSlot.getId(), reservationSlot.getRemaining());
+        log.info("잔여 인원 차감 완료. slotId={}", reservationSlot.getId());
 
         log.info("예약 등록 시작...");
         // ReservationHistory reservationHistory = createReservation(account,reservationSlot, request.request(), request.totalVisitors());
@@ -67,7 +70,7 @@ public class ReservationService {
         try {
             ReservationHistory savedHistory = reservationHistoryRepository.save(reservationHistory);
             log.info("예약 등록 성공. slotId={}, accountId={}", savedHistory.getId(), accountId);
-            return ReservationResponse.mapFromHistory(savedHistory);
+            return savedHistory.toResponse();
         } catch (Exception e) {
             log.info("예약 저장 실패. slotId={}, accountId={}, error={}", reservationSlot.getId(), accountId, e.getMessage(), e);
             throw new ReservationException(ReservationErrorCode.RESERVATION_INTERNAL_ERROR);
@@ -78,7 +81,8 @@ public class ReservationService {
     public void cancelReservation(String slotId, String historyId, String accountId) {
 
         ReservationSlot reservationSlot = entityFinder.getReservationSlotById(slotId);
-        log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
+        // log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
+        log.info("예약 슬롯 조회 성공: slotId={}", reservationSlot.getId());
 
         log.info("예약 존재 여부 확인 시작...");
         ReservationHistory reservationHistory = entityFinder.getHistoryById(historyId);
@@ -101,11 +105,7 @@ public class ReservationService {
         validateNotSameDayReservation(reservationSlot);
 
         log.info("잔여 인원 및 OPEN 상태 검증 시작...");
-        reservationSlot.increaseRemaining(reservationHistory.getReservedPeople());
-        if(reservationSlot.getRemaining() > 0 && reservationSlot.getStatus().equals(SlotStatus.HOLD)){
-            reservationSlot.setOpen();
-        }
-        log.info("잔여 인원 증가 완료. slotId={}, 남은 인원={}, slot 상태={}", reservationSlot.getId(), reservationSlot.getRemaining(), reservationSlot.getStatus());
+        reservationSlot.restoreCapacity(reservationHistory.isReservedPeople());
 
         log.info("예약 취소 시작...");
         reservationHistory.setCancel();

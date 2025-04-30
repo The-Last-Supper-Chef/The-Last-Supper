@@ -4,14 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
-
-public record ReservationSlotDTO(
-	String    slotId,
-	String    planId,
+/**
+ * 예약 슬롯 정보 응답 DTO
+ */
+public record ReservationSlotResponse(
+	String slotId,
+	String planId,
 	LocalDate date,
 	LocalTime startTime,
-	int       capacityTotal,
-	int       remaining,
+	int capacityTotal,
+	int remaining,
 	SlotStatus status
 ) {
 }

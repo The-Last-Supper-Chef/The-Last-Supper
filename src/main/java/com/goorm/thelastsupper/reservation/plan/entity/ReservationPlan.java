@@ -18,7 +18,6 @@ import org.hibernate.annotations.NotFoundAction;
  * 예약 계획 엔티티 클래스
  * - 예약 슬롯을 관리하는 계획을 나타냅니다.
  */
-@Getter
 @Entity
 @Table(name = "reservation_plan")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

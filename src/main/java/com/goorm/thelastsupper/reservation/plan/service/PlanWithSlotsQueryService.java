@@ -61,16 +61,7 @@ public class PlanWithSlotsQueryService {
 				List<ReservationSlotDTO> slotDtos =
 					slotsByPlanId.getOrDefault(plan.getId(), List.of());
 				log.info("planId={} → 슬롯 {}개", plan.getId(), slotDtos.size());
-				return new ReservationPlanResponse(
-					plan.getPlanDate(),
-					plan.getWeekday(),
-					plan.getOpenTime(),
-					plan.getCloseTime(),
-					plan.getBreakOpenTime(),
-					plan.getBreakCloseTime(),
-					plan.getTurnTimeMinutes(),
-					slotDtos
-				);
+				return plan.toDTO();
 			})
 			.collect(Collectors.toList());
 	}

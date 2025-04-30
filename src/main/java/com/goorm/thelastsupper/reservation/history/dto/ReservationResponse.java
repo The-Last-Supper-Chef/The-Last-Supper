@@ -13,15 +13,4 @@ public record ReservationResponse(
         long reservedPeople,
         boolean visible
 ) {
-    public static ReservationResponse mapFromHistory(ReservationHistory savedHistory){
-        return new ReservationResponse(
-                savedHistory.getAccount().getId(),
-                savedHistory.getReservationSlot().getId(),
-                savedHistory.getRequest(),
-                savedHistory.getReservedStatus(),
-                savedHistory.getRejectionReason(),
-                savedHistory.getReservedPeople(),
-                savedHistory.isVisible());
-    }
-
 }

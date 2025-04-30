@@ -12,7 +12,19 @@ import java.util.Optional;
 
 public interface ReservationHistoryRepository extends JpaRepository<ReservationHistory, String> {
     Optional<ReservationHistory> findByAccountAndReservationSlot(Account account, ReservationSlot reservationSlot);
-    Optional<ReservationHistory> findByAccountIdAndReservationSlot(String accountId, ReservationSlot reservationSlot);
+
+    // Optional<ReservationHistory> findByAccountIdAndReservationSlot(String accountId, ReservationSlot reservationSlot);
+    @Query(value = """
+      SELECT *
+        FROM reservation_history rh
+       WHERE rh.account_id            = :accountId
+         AND rh.reservation_slot_id   = :slotId
+      """,
+        nativeQuery = true)
+    Optional<ReservationHistory> findByAccountIdAndReservationSlotId(
+        @Param("accountId") String accountId,
+        @Param("slotId")    String slotId
+    );
 
     List<ReservationHistory> findAllByAccountAndReservationSlot(Account account, ReservationSlot reservationSlot);
 

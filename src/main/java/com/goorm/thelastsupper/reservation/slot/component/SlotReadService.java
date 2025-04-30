@@ -26,10 +26,13 @@ public class SlotReadService {
 	public Map<String, List<ReservationSlotDTO>> findSlotsGroupedByPlanId(List<String> planIds) {
 		return slotRepository.findSlotsByPlanIds(planIds)
 			.stream()
-			.map(ReservationSlotDTO::from)
+			.map(ReservationSlot::toDTO)
 			.collect(Collectors.groupingBy(ReservationSlotDTO::planId));
 	}
 
+	/**
+	 * 2) 주어진 슬롯 ID에 해당하는 슬롯을 리턴
+	 */
 	public ReservationSlot checkSlotExistence(String slotId) {
 		return slotRepository.findById(slotId)
 			.orElseThrow(() -> new ReservationException(

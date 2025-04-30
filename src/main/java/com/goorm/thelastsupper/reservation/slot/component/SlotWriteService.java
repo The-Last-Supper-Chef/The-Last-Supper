@@ -28,7 +28,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SlotWriteService {
 	private final JpaSlotWriteRepository jpaSlotWriteRepository;
-	private final JpaSlotReadRepository jpaSlotReadRepository;
 
 	/**
 	 * 시간 슬롯들을 저장하는 메서드.
