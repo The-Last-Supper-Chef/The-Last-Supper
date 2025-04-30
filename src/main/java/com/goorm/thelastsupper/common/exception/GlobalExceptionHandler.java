@@ -2,6 +2,7 @@ package com.goorm.thelastsupper.common.exception;
 
 import com.goorm.thelastsupper.account.exception.AccountException;
 import com.goorm.thelastsupper.common.dto.ErrorResponse;
+import com.goorm.thelastsupper.common.security.exception.AuthException;
 import com.goorm.thelastsupper.reservation.exception.ReservationException;
 import com.goorm.thelastsupper.restaurant.exception.RestaurantException;
 import com.goorm.thelastsupper.waiting.exception.WaitingException;
@@ -61,5 +62,19 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
         log.info("잘못된 HTTP 메서드 - {}", ex.getMethod());
         return new ResponseEntity<>(response, errorCode.getHttpStatus());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
+        ErrorCode errorCode = ErrorCode.INVALID_SERVER_ERROR;
+        ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
+        log.error("유틸리티 클래스 인스턴스화 오류", ex);
+        return new ResponseEntity<>(response, errorCode.getHttpStatus());
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> AuthExceptionHandler(AuthException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getErrorCode().name(), ex.getErrorCode().getMessage());
+        return new ResponseEntity<>(response, ex.getErrorCode().getHttpStatus());
     }
 }

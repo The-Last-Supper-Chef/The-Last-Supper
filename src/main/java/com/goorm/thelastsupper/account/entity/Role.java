@@ -1,5 +1,9 @@
 package com.goorm.thelastsupper.account.entity;
 
+import java.util.Arrays;
+
+import com.goorm.thelastsupper.common.security.exception.AuthException;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,5 +15,12 @@ public enum Role {
 
     private final String code;
     private final String name;
+
+    public static Role of(String role) {
+        return Arrays.stream(Role.values())
+            .filter(r -> r.getCode().equals(role))
+            .findFirst()
+            .orElseThrow(AuthException.InvalidClaimValueException::new);
+    }
 
 }
