@@ -35,4 +35,13 @@ public class Account extends BaseEntity {
     private LocalDateTime deletedAt;
 
     private LocalDateTime deletionScheduledAt;
+
+    public void update(String nickName, String phoneNumber) {
+        this.nickName = nickName;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
