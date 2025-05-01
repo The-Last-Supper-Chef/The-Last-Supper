@@ -3,7 +3,6 @@ package com.goorm.thelastsupper.reservation.slot.entity;
 import com.goorm.thelastsupper.common.entity.BaseEntity;
 import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
 import com.goorm.thelastsupper.reservation.plan.entity.ReservationPlan;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotDTO;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotResponse;

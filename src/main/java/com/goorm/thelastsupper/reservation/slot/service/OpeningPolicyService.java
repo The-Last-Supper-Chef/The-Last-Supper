@@ -1,4 +1,4 @@
-package com.goorm.thelastsupper.reservation.plan.service;
+package com.goorm.thelastsupper.reservation.slot.service;
 
 import org.springframework.stereotype.Component;
 

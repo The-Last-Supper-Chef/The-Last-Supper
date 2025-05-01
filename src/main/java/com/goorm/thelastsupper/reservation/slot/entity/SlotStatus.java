@@ -1,4 +1,4 @@
-package com.goorm.thelastsupper.reservation.plan.entity;
+package com.goorm.thelastsupper.reservation.slot.entity;
 
 public enum SlotStatus {
     OPEN,

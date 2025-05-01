@@ -6,7 +6,6 @@ import com.goorm.thelastsupper.reservation.history.dto.ReservationRequest;
 import com.goorm.thelastsupper.reservation.history.dto.ReservationResponse;
 import com.goorm.thelastsupper.reservation.history.entity.ReservationHistory;
 import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
-import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
 import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
 import com.goorm.thelastsupper.reservation.history.repository.ReservationHistoryRepository;
@@ -22,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.goorm.thelastsupper.reservation.history.entity.ReservationHistory.createReservation;
 import static com.goorm.thelastsupper.reservation.util.ReservationUtil.*;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -42,7 +39,7 @@ public class ReservationService {
         // log.info("예약 슬롯 조회 성공: slotId={}, date={}, remaining={}", reservationSlot.getId(), reservationSlot.getDate(), reservationSlot.getRemaining());
         log.info("예약 슬롯 조회 성공: slotId={}", reservationSlot.getId());
 
-        // FIXME: 타 도메인에서 조회하는 로직은 타 서비스로 분리하는 것이 좋을 것 같습니다.
+        // FIXME: 계정 인증 관련 로직은 인증에서 처리되어야 할 것 같습니다.
         // Account account = entityFinder.getAccountById(accountId);
         // log.info("계정 조회 성공: accountId={}, email={}", account.getId(), account.getEmail());
 

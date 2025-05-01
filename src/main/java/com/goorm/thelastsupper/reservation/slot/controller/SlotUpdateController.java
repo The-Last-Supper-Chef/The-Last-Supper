@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/slots")
+@RequestMapping("/api/v1/restaurants/restaurants/slots")
 @RequiredArgsConstructor
 public class SlotUpdateController {
 

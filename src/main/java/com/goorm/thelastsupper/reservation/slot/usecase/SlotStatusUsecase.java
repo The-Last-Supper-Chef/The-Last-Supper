@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
 import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
+import com.goorm.thelastsupper.reservation.slot.entity.SlotStatus;
 import com.goorm.thelastsupper.reservation.slot.service.SlotStatusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

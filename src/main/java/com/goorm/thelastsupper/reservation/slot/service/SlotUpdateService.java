@@ -1,20 +1,15 @@
 package com.goorm.thelastsupper.reservation.slot.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.goorm.thelastsupper.reservation.common.error.ReservationErrorCode;
-import com.goorm.thelastsupper.reservation.common.exception.ReservationException;
-import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
 import com.goorm.thelastsupper.reservation.slot.component.SlotReadService;
 import com.goorm.thelastsupper.reservation.slot.component.SlotWriteService;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotResponse;
 import com.goorm.thelastsupper.reservation.slot.dto.ReservationSlotUpdateRequest;
 import com.goorm.thelastsupper.reservation.slot.entity.ReservationSlot;
-import com.goorm.thelastsupper.reservation.slot.repository.ReservationTimeSlotRepository;
 
 import lombok.RequiredArgsConstructor;
 
