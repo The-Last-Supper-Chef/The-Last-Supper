@@ -3,10 +3,7 @@ package com.goorm.thelastsupper.waiting.entity;
 import com.goorm.thelastsupper.common.entity.BaseEntity;
 import com.goorm.thelastsupper.restaurant.entity.Restaurant;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Table(name = "waiting_setting")
@@ -14,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 public class WaitingSetting extends BaseEntity {
     // 웨이팅 세팅: 열림, 중단, 종료
     @Enumerated(EnumType.STRING)
@@ -27,5 +25,6 @@ public class WaitingSetting extends BaseEntity {
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     private Restaurant restaurant;
+
 
 }

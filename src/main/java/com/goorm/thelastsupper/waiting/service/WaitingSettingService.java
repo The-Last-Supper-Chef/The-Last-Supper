@@ -2,6 +2,7 @@ package com.goorm.thelastsupper.waiting.service;
 
 import com.goorm.thelastsupper.restaurant.entity.Restaurant;
 import com.goorm.thelastsupper.restaurant.repository.RestaurantRepository;
+import com.goorm.thelastsupper.waiting.dto.WaitingSettingCache;
 import com.goorm.thelastsupper.waiting.dto.WaitingSettingFindRequest;
 import com.goorm.thelastsupper.waiting.dto.WaitingSettingRequest;
 import com.goorm.thelastsupper.waiting.dto.WaitingSettingResponse;
@@ -14,9 +15,14 @@ import com.goorm.thelastsupper.waiting.repository.WaitingQueueRepository;
 import com.goorm.thelastsupper.waiting.repository.WaitingSettingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
+import java.io.Serializable;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,27 +35,42 @@ public class WaitingSettingService {
     private final WaitingSettingRepository waitingSettingRepository;
     private final WaitingQueueRepository waitingQueueRepository;
 
-    //Message : 기존 코드 설명 후 삭제 예정
-//        // 1. 매장 존재 여부 확인
-//        Restaurant restaurant  = restaurantRepository.findById(request.restaurantId())
-//                .orElseThrow(WaitingException.RestaurantNotFoundException::new);
-//        // 2. 매장의 최신 대기 상태 값 확인
-//        Optional<WaitingSetting> latestWaitingSetting = waitingSettingRepository.findFirstByRestaurant_IdOrderByIdDesc(request.restaurantId());
+    private final RedisTemplate<String, WaitingSettingCache> redisCachedTemplate;
+
 
     @Transactional
     public WaitingSettingFindRequest findRestaurantAndSetting(String id) {
-        //1. 매장 존재 여부 확인
+        long startTime = System.currentTimeMillis();
+
+        // 1. 매장 조회
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(WaitingException.RestaurantNotFoundException::new);
 
-        //2. 매장의 최신 대기 상태 값 확인
-        Optional<WaitingSetting> latestWaitingSetting = waitingSettingRepository
-                .findFirstByRestaurant_IdOrderByIdDesc(id);
+        // 2. Redis 캐시에서 대기 설정 조회
+        String cacheKey = "waiting-setting:" + id;
+        WaitingSettingCache cached = redisCachedTemplate.opsForValue().get(cacheKey);
 
-        // 3. 반환할 DTO 생성하여 리턴
-        return new WaitingSettingFindRequest(restaurant, latestWaitingSetting);
+        WaitingSetting latestWaitingSetting = null;
+
+        if (cached != null) {
+            long elapsed = System.currentTimeMillis() - startTime;
+            log.info("캐시에서 조회 성공 ({}ms)" , elapsed);
+            log.info("cached = {}",cached);
+            latestWaitingSetting = cached.toEntity(restaurant); // toEntity에서 restaurant 주입
+        } else {
+            latestWaitingSetting = waitingSettingRepository
+                    .findFirstByRestaurant_IdOrderByIdDesc(id)
+                    .orElse(null);
+            if (latestWaitingSetting != null) {
+                redisCachedTemplate.opsForValue().set(cacheKey,
+                        WaitingSettingCache.from(latestWaitingSetting),
+                        Duration.ofMinutes(5));
+            }
+            long elapsed = System.currentTimeMillis() - startTime;
+            log.info("DB에서 조회 및 캐시 저장 완료 ({}ms)", elapsed);
+        }
+        return new WaitingSettingFindRequest(restaurant, Optional.ofNullable(latestWaitingSetting));
     }
-
 
     @Transactional
     public WaitingSettingResponse openWaiting(WaitingSettingRequest request) {
@@ -60,28 +81,31 @@ public class WaitingSettingService {
         log.info("매장 정보: {}", findRequest.restaurant()); //매장 정보 로그
 
         // 최신 대기 설정 상태가 존재하면 출력, 없으면 "없음"을 출력
-        if (findRequest.latestWaitingSetting().isPresent()) {
-            log.info("최신 대기 설정 상태: {}", findRequest.latestWaitingSetting().get().getWaitingSetCategory());
-        } else {
-            log.info("최신 대기 설정 상태: 없음");
-        }
-
-        //2. 최신 대기 상태가 OPEN일 경우 예외 처리
-        if(findRequest.latestWaitingSetting().isPresent()) {
-            WaitingSetting setting = findRequest.latestWaitingSetting().get();
-            if (setting.getWaitingSetCategory() == WaitingSetCategory.OPEN) {
-                throw new WaitingException.WaitingAlreadyOpenException();
-            }
-        }
+        findRequest.latestWaitingSetting().ifPresent(setting -> {
+           if (setting.getWaitingSetCategory() == WaitingSetCategory.OPEN) {
+               throw new WaitingException.WaitingAlreadyOpenException();
+           }
+        });
 
         // 3. 대기열 상태를 OPEN으로 설정하여 저장
         WaitingSetting setting = request.toEntity(findRequest.restaurant());
         waitingSettingRepository.save(setting);
+        log.info("Setting 저장 값:  {}", setting);
 
+        // 4. Redis 캐시 갱신
+        String cacheKey = "waiting-setting:" + request.restaurantId();
+        WaitingSettingCache cacheValue = WaitingSettingCache.from(setting);
+
+        try {
+            redisCachedTemplate.opsForValue().set(cacheKey, cacheValue, Duration.ofMinutes(5));
+            log.info("Redis 캐시 갱신 완료: {}", cacheKey);
+        } catch (Exception e) {
+            log.error("Redis 캐시 갱신 실패: {}", e.getMessage());
+        }
         // 로그로 저장된 대기 상태 확인
         log.info("새로운 대기 상태가 OPEN으로 설정됨: {}", setting.getWaitingSetCategory());
 
-        // 4. Entity -> 응답 DTO 변환
+        // 5. Entity -> 응답 DTO 변환
         return WaitingSettingResponse.from(setting);
     }
 
@@ -114,9 +138,20 @@ public class WaitingSettingService {
             throw new WaitingException.WaitingNotOpendException();
         }
 
-        // 4. 중단 상태로 저장
+        // 3. 중단 상태로 저장
         WaitingSetting setting = request.toEntity(findRequest.restaurant());
         waitingSettingRepository.save(setting);
+
+        // 4. Redis 캐시 갱신
+        String cacheKey = "waiting-setting:"  + request.restaurantId();
+        WaitingSettingCache cacheValue = WaitingSettingCache.from(setting);
+
+        try {
+            redisCachedTemplate.opsForValue().set(cacheKey, cacheValue, Duration.ofMinutes(5));
+            log.info("Redis 캐시 갱신 완료 (PAUSE): {}", cacheKey);
+        } catch (Exception e) {
+            log.error("Redis 캐시 갱신 실패(PAUSE): {}", e.getMessage());
+        }
 
         // 5. 응답 DTO 반환
         return WaitingSettingResponse.from(setting);
@@ -154,6 +189,17 @@ public class WaitingSettingService {
         // 4. 대기열 설정 종료 상태로 저장
         WaitingSetting setting = request.toEntity(findRequest.restaurant());
         waitingSettingRepository.save(setting);
+
+        // 5. Redis 캐시 갱신
+        String cacheKey = "waiting-setting:"  + request.restaurantId();
+        WaitingSettingCache cacheValue = WaitingSettingCache.from(setting);
+
+        try {
+            redisCachedTemplate.opsForValue().set(cacheKey, cacheValue, Duration.ofMinutes(5));
+            log.info("Redis 캐시 갱신 완료 (CLOSE): {}", cacheKey);
+        } catch (Exception e) {
+            log.error("Redis 캐시 갱신 실패(CLOSE): {}", e.getMessage());
+        }
 
         return WaitingSettingResponse.from(setting);
     }
