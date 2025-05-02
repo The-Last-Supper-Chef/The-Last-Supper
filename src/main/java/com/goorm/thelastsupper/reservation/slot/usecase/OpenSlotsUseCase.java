@@ -1,11 +1,11 @@
-package com.goorm.thelastsupper.reservation.plan.usecase;
+package com.goorm.thelastsupper.reservation.slot.usecase;
 
 import java.util.List;
 
 import com.goorm.thelastsupper.reservation.plan.dto.OpenSlotsCommandRequest;
 import com.goorm.thelastsupper.reservation.plan.dto.ReservationPlanResponse;
 import com.goorm.thelastsupper.reservation.plan.service.PlanCreatorService;
-import com.goorm.thelastsupper.reservation.plan.service.OpeningPolicyService;
+import com.goorm.thelastsupper.reservation.slot.service.OpeningPolicyService;
 import com.goorm.thelastsupper.reservation.slot.service.SlotCreatorService;
 
 import lombok.RequiredArgsConstructor;

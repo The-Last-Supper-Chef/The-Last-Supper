@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/restaurants")
+@RequestMapping("/api/v1/reservations/restaurants")
 @RequiredArgsConstructor
 public class PlanReadController {
 	private final GetPlansWithSlotsUseCase getPlansWithSlotsUseCase;

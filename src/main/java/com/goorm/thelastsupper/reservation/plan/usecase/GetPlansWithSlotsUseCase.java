@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.thelastsupper.reservation.plan.assembler.ReservationPlanDtoAssembler;
 import com.goorm.thelastsupper.reservation.plan.dto.ReservationPlanResponse;
-import com.goorm.thelastsupper.reservation.plan.service.PlanWithSlotsQueryService;
+import com.goorm.thelastsupper.reservation.plan.service.PlanQueryService;
+import com.goorm.thelastsupper.reservation.slot.service.SlotQueryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class GetPlansWithSlotsUseCase {
-	private final PlanWithSlotsQueryService planWithSlotsQueryService;
+	private final PlanQueryService planQueryService;
+	private final SlotQueryService slotQueryService;
+	private final ReservationPlanDtoAssembler planDtoAssembler;
 
 	/**
 	 * @param restaurantId 조회할 식당 ID
@@ -31,6 +35,18 @@ public class GetPlansWithSlotsUseCase {
 		LocalDate start,
 		LocalDate end
 	) {
-		return planWithSlotsQueryService.getPlansWithSlots(restaurantId, start, end);
+		// 1) Plan ID 조회
+		var planIds = planQueryService.findPlanIds(restaurantId, start, end);
+		if (planIds.isEmpty()) {
+			return List.of();
+		}
+		// 2) Slot 조회 (Plan ID 별 그룹)
+		var slotsByPlanId = slotQueryService.findSlotsByPlanIds(planIds);
+
+		// 3) Plan 엔티티 조회
+		var plans = planQueryService.findPlansByIds(planIds);
+
+		// 4) DTO 조립
+		return planDtoAssembler.assemble(plans, slotsByPlanId);
 	}
 }

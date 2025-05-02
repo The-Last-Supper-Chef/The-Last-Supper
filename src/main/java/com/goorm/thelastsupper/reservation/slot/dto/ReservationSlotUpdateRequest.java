@@ -1,6 +1,6 @@
 package com.goorm.thelastsupper.reservation.slot.dto;
 
-import com.goorm.thelastsupper.reservation.plan.entity.SlotStatus;
+import com.goorm.thelastsupper.reservation.slot.entity.SlotStatus;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

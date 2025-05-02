@@ -17,9 +17,9 @@ import com.goorm.thelastsupper.reservation.slot.dto.SlotStatusRequest;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/reservation/slots")
+@RequestMapping("/api/v1/reservations/restaurants/slots")
 @AllArgsConstructor
-public class SlotStatusController {
+public class SlotStatusUpdateController {
 	private final SlotStatusUsecase slotStatusUsecase;
 
 	/**

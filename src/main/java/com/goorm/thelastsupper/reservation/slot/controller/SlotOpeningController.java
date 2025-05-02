@@ -1,16 +1,17 @@
-package com.goorm.thelastsupper.reservation.plan.controller;
+package com.goorm.thelastsupper.reservation.slot.controller;
 
 import java.util.List;
 
 import com.goorm.thelastsupper.reservation.plan.dto.ReservationPlanResponse;
 import com.goorm.thelastsupper.restaurant.exception.ApiResponse;
 import com.goorm.thelastsupper.reservation.plan.dto.OpenSlotsCommandRequest;
-import com.goorm.thelastsupper.reservation.plan.usecase.OpenSlotsUseCase;
+import com.goorm.thelastsupper.reservation.slot.usecase.OpenSlotsUseCase;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +23,14 @@ import org.springframework.web.bind.annotation.*;
  * */
 @Validated
 @RestController
-@RequestMapping("/api/v1/slots")
+@RequestMapping("/api/v1/reservations/restaurants")
 @RequiredArgsConstructor
 public class SlotOpeningController {
 	private final OpenSlotsUseCase openSlotsUseCase;
 
 	//@PreAuthorize("hasRole('OWNER')")
-	@PostMapping("/open")
+	@PreAuthorize("permitAll()")
+	@PostMapping("/{restaurantId}/slots/open")
 	public ResponseEntity<ApiResponse<List<ReservationPlanResponse>>> openSlots(@Valid @RequestBody OpenSlotsCommandRequest commandPayload) {
 		List<ReservationPlanResponse> response = openSlotsUseCase.execute(commandPayload);
 		return ResponseEntity.status(HttpStatus.CREATED).body(
