@@ -21,15 +21,11 @@ import java.time.LocalDateTime;
 public class WaitingSettingCache {
     private  String restaurantId;
     private  WaitingSetCategory category;
-    private  LocalDateTime createdAt;
-    private  LocalDateTime updatedAt;
 
     public static WaitingSettingCache from(WaitingSetting setting) {
         return new WaitingSettingCache(
                 setting.getRestaurant().getId(),
-                setting.getWaitingSetCategory(),
-                setting.getCreatedAt(),
-                setting.getUpdatedAt()
+                setting.getWaitingSetCategory()
         );
     }
 
