@@ -2,6 +2,8 @@ package com.goorm.thelastsupper.restaurant.entity;
 
 import com.goorm.thelastsupper.common.entity.BaseEntity;
 import com.goorm.thelastsupper.account.entity.Account;
+import com.goorm.thelastsupper.restaurant.dto.RestaurantUpdateRequest;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,4 +50,15 @@ public class Restaurant extends BaseEntity {
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     private Account account;
+
+    public void update(RestaurantUpdateRequest request) {
+        this.restaurantName = request.restaurantName();
+        this.restaurantLocation = request.restaurantLocation();
+        this.industry = request.industry();
+        this.restaurantNumber = request.restaurantNumber();
+        this.introduction = request.introduction();
+        this.openTime = request.openTime();
+        this.closeTime = request.closeTime();
+        this.weekdays = request.openDays();
+    }
 }
