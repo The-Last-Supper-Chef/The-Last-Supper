@@ -96,6 +96,8 @@ public class WaitingSettingService {
         String cacheKey = "waiting-setting:" + request.restaurantId();
         WaitingSettingCache cacheValue = WaitingSettingCache.from(setting);
 
+        redisCachedTemplate.opsForValue().set(cacheKey,cacheValue);
+
         try {
             redisCachedTemplate.opsForValue().set(cacheKey, cacheValue, Duration.ofMinutes(5));
             log.info("Redis 캐시 갱신 완료: {}", cacheKey);
@@ -146,6 +148,8 @@ public class WaitingSettingService {
         String cacheKey = "waiting-setting:"  + request.restaurantId();
         WaitingSettingCache cacheValue = WaitingSettingCache.from(setting);
 
+        redisCachedTemplate.opsForValue().set(cacheKey,cacheValue);
+
         try {
             redisCachedTemplate.opsForValue().set(cacheKey, cacheValue, Duration.ofMinutes(5));
             log.info("Redis 캐시 갱신 완료 (PAUSE): {}", cacheKey);
@@ -193,6 +197,8 @@ public class WaitingSettingService {
         // 5. Redis 캐시 갱신
         String cacheKey = "waiting-setting:"  + request.restaurantId();
         WaitingSettingCache cacheValue = WaitingSettingCache.from(setting);
+
+        redisCachedTemplate.opsForValue().set(cacheKey,cacheValue);
 
         try {
             redisCachedTemplate.opsForValue().set(cacheKey, cacheValue, Duration.ofMinutes(5));
