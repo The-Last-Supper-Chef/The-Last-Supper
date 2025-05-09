@@ -1,5 +1,7 @@
 package com.goorm.thelastsupper.account.service;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,12 @@ public class AuthService {
 		return saveToken(accountValidationService.findById(tokenProvider.getAccountId(refresh)));
 	}
 
+	public void deleteAllToken(String accountId) {
+		List<JWTToken> tokens = jwtTokenRepository.findByAccountId(accountId);
+		log.info("삭제할 토큰 개수: {}", tokens.size());
+		jwtTokenRepository.deleteAll(tokens);
+	}
+
 	private TokenDTO saveToken(Account account){
 		JWTToken refreshToken = makeToken(account);
 		jwtTokenRepository.save(refreshToken);
@@ -50,7 +58,7 @@ public class AuthService {
 	}
 
 	private JWTToken makeToken(Account account){
-		return new JWTToken(tokenProvider.createRefreshToken(account.getId()), tokenProvider.createAccessToken(account));
+		return new JWTToken(tokenProvider.createRefreshToken(account.getId()), tokenProvider.createAccessToken(account), account.getId());
 	}
 
 	private void validRefreshToken(String access, String refresh){

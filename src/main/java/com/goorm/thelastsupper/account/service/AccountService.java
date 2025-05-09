@@ -1,5 +1,6 @@
 package com.goorm.thelastsupper.account.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountService {
 
 	private final AccountValidationService accountValidationService;
+	private final PasswordEncoder passwordEncoder;
+	private final AuthService authService;
 
 	public AccountResponse getAccount(String accountId) {
 		Account account = accountValidationService.findById(accountId);
@@ -34,7 +37,8 @@ public class AccountService {
 	public AccountResponse updatePassword(String accountId, PasswordRequest passwordRequest) {
 		Account account = accountValidationService.findById(accountId);
 		accountValidationService.checkPassword(passwordRequest.curPassword(), account.getPassword());
-		account.updatePassword(passwordRequest.newPassword());
+		account.updatePassword(passwordEncoder.encode(passwordRequest.newPassword()));
+		authService.deleteAllToken(account.getId());
 		return AccountResponse.toAccountResponse(account);
 	}
 }

@@ -52,12 +52,16 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 				Authentication auth = tokenProvider.getAuthentication(token);
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			} catch (ExpiredJwtException e) {
+				log.info("1");
 				throw new AuthException.TokenExpiredException();
 			} catch (UnsupportedJwtException e) {
+				log.info("2");
 				throw new AuthException.UnsupportedTokenException();
 			} catch (SignatureException | SecurityException | MalformedJwtException e) {
+				log.info("3");
 				throw new AuthException.TokenParsingException();
 			} catch (IllegalArgumentException e) {
+				log.info("4");
 				throw new AuthException.InvalidAuthHeaderException();
 			}
 		}
